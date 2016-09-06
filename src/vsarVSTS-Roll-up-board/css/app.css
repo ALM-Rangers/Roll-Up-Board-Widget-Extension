@@ -1,0 +1,97 @@
+﻿body {
+    font-family: 'Segoe UI', sans-serif;
+}
+
+span {
+    font-style: italic;
+}
+
+.config-label {
+    font-size: 12px;
+    font-family: 'Segoe UI','Tahoma','Arial','Verdana';
+    line-height: 14px;
+    margin: 18px 10px 0 0;
+    min-width: 75px;
+    padding: 4px 0 2px 0;
+    color: #424245;
+    display: inline-block;
+    vertical-align: top;
+    width: 110px;
+}
+
+
+.settings-field {
+    width: 256px;
+    margin: 20px 0 10px 0;
+}
+
+
+#tableboard {
+    text-align: center;
+    width: 100%;
+    font-size: 22px;
+}
+
+.theader {
+    background-color: #F2F2F2;
+    height: 28px;
+    font-size: 13px;
+}
+
+th {
+    font-weight: normal;
+}
+
+.swim {
+    height: 28px;
+    background-color: #d8e4ec;
+    text-align: left;
+    padding-left: 10px;
+    color: #000;
+    font-size: 13px;
+}
+
+table, td, th {
+    border: 1px solid grey;
+}
+
+tr {
+    height: 42px;
+}
+
+.trswim {
+    height: 28px;
+}
+
+.title-header {
+    color: #fff;
+    padding: 3px 3px 3px 10px;
+    font-size: 13px;
+    margin: 0 0 10px 0;
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+
+.defaultcontent {
+    top: 55%;
+}
+
+.widget-message-text {
+    text-align: center;
+    font-size: 18px;
+    color: grey;
+}
+
+.tableHeaderColName-left {
+    display: inline;
+    margin: 5px;
+    color: #000;
+}
+
+.tableHeaderWiLimit-right {
+    display: inline;
+    width: 20px;
+    padding: 2px 0px 2px 2px;
+    margin: 5px 0px 5px 5px;
+    font-size: 12px;
+}

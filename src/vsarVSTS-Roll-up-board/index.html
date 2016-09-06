@@ -1,0 +1,75 @@
+﻿<!-- ---------------------------------------------------------------------
+// <copyright file="index.html">
+//    This code is licensed under the MIT License.
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+//    PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// </copyright>
+// <summary>
+// widget main page
+// </summary>
+//---------------------------------------------------------------------
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Roll-Up of the Board</title>
+    <link rel="stylesheet" href="css/app.css" type="text/css" />
+    <style>
+        .bgImage {
+            background-image: url('img/unconfigured-small.png');
+            height: 40px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="widget" style="cursor:pointer">
+       
+            <div class="title-header" style="font-size:13px"></div>
+            <div id="content">
+                <table id="tableboard"></table>
+            </div>
+        
+        <div class="defaultcontent" style="display: block;" id="configwidget">
+            <div class="widget-message-text">Configure widget</div>
+            <div class="bgImage"></div>
+            <span class="link-text"></span>
+        </div>
+        <div class="loadingcontent" style="display: block;" id="loadingwidget">
+            <div style="background-color:lightgray;height:100px;opacity:0.5"></div>
+        </div>
+    </div>
+
+
+    <script src="scripts/VSS.SDK.min.js"></script>
+    <script src="scripts/ai.0.22.9-build00167.min.js"></script>
+    <script src="scripts/TelemetryClient.js"></script>
+    <script type="text/javascript">
+        // Initialize the VSS sdk
+        VSS.init({
+            explicitNotifyLoaded: true,
+            setupModuleLoader: true,
+            usePlatformScripts: true,
+            usePlatformStyles: true,
+            moduleLoaderConfig: {
+                paths: {
+                    "Scripts": "scripts"
+                }
+            }
+        });
+
+        // Wait for the SDK to be initialized
+        VSS.ready(function () {
+            require(["Scripts/appWidget"], function (app) { });
+        });
+    </script>
+
+
+</body>
+</html>
