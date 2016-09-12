@@ -8,7 +8,7 @@ The **Roll-up Board Widget** displays an aggregated view of your backlog boards 
 
 ## Quick steps to get started ###
 
-1. Edit ![](/src/vsarVSTS-Roll-up-board/img/overview_edit.png) your dashboard.
+1. Edit ![](/src/vsarVSTS-Roll-up-board/img//overview_edit.png) your dashboard.
 
 2. Select the **Roll-up Board Widget** (1) and click Add (2).
 
