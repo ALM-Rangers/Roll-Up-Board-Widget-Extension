@@ -12,15 +12,15 @@ The **Roll-up Board Widget** displays an aggregated view of your backlog boards 
 
 2. Select the **Roll-up Board Widget** (1) and click Add (2).
 
-    ![addwidget](src/vsarVSTS-Roll-up-board/img/overview_add.png)
+![addwidget](src/vsarVSTS-Roll-up-board/img/overview_add.png)
 
 3. Enter a Title (1), select a suitable Size (2), and select a Backlog (3). Click Save (4).
 
-    ![configure](/src/vsarVSTS-Roll-up-board/img/overview_configure.png)
+![configure](/src/vsarVSTS-Roll-up-board/img/overview_configure.png)
 
 4. Add and arrange one or more of the widgets on your dashboard.
 
-    ![dashboard](/src/vsarVSTS-Roll-up-board/img/overview_dashboard.png)
+![dashboard](/src/vsarVSTS-Roll-up-board/img/overview_dashboard.png)
 
 5. Click on the widget to take you to the associated board. 
 
