@@ -4,7 +4,7 @@
   "version": "",
   "name": "",
   "scopes": [ "vso.work" ],
-  "description": "Display an aggregated view of your backlog board on your dashboard.",
+  "description": "The widget shows the number of cards in each column of the Kanban board.",
   "publisher": "",
   "icons": {
     "default": "img/logo.png"
