@@ -22,7 +22,8 @@ The **Roll-up Board Widget** displays an aggregated view of your backlog boards 
 
 5. Click on the widget to take you to the associated board. 
 
-> KNOWN ISSUE - There is an oddity that occurs when a work item appears on several boards and has overlapping area path ownerships between two or more teams. This is a current limitation and we are investigating.
+### Known issue(s)
+There is an oddity that occurs when a work item appears on several boards and has overlapping area path ownership between two or more teams. It’s a known limitation of Query on the Kanban board today and we therefore do **not** support overlapping area paths.
 
 ### Learn more
 
