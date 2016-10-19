@@ -78,7 +78,7 @@
       ],
       "properties": {
         "name": "Roll-Up Board",
-        "description": "View board summary",
+        "description": "View a board summary, showing number of cards for both columns and swimlanes.",
         "uri": "index.html",
         "isNameConfigurable": true,
         "previewImageUrl": "img/logo.png",
@@ -117,8 +117,8 @@
       "type": "ms.vss-dashboards-web.widget-configuration",
       "targets": [ "ms.vss-dashboards-web.widget-configuration" ],
       "properties": {
-        "name": "Roll-Up Board Widget Configuration",
-        "description": "Configure Roll-Up Board Widget",
+        "name": "Roll-Up Board Configuration",
+        "description": "Configure Roll-Up Board widget.",
         "uri": "configuration.html"
       }
     }
