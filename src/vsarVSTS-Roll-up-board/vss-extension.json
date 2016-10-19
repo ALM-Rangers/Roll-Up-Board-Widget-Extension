@@ -77,7 +77,7 @@
         ".rollupboardwidget-Configuration"
       ],
       "properties": {
-        "name": "Roll-Up Board Widget",
+        "name": "Roll-Up Board",
         "description": "View board summary",
         "uri": "index.html",
         "isNameConfigurable": true,
