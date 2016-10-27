@@ -9,26 +9,27 @@
 // <summary>
 // </summary>
 //---------------------------------------------------------------------
+/// <reference path="../typings/tsd.d.ts" />
+"use strict";
 define(["require", "exports"], function (require, exports) {
-    /// <reference path="../typings/tsd.d.ts" />
-    "use strict";
     var RollUpBoard = (function () {
         function RollUpBoard() {
             this.containSplittedColumns = false;
         }
         return RollUpBoard;
-    }());
+    })();
     exports.RollUpBoard = RollUpBoard;
     var Column = (function () {
         function Column() {
         }
         return Column;
-    }());
+    })();
     exports.Column = Column;
     var Row = (function () {
         function Row() {
         }
         return Row;
-    }());
+    })();
     exports.Row = Row;
 });
+//# sourceMappingURL=RollUpBoard.js.map

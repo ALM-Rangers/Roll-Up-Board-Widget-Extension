@@ -28,7 +28,6 @@ class TelemetryClient {
     private appInsightsClient: Microsoft.ApplicationInsights.AppInsights;
 
     private Init() {
-        var Key_dev = "79ea7918-5fbf-4864-9b7d-ee682f226042";
         var Key_MsLabs = "__INSTRUMENTATIONKEY__";
         try {
             var snippet: any = {

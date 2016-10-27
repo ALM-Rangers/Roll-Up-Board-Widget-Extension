@@ -9,10 +9,10 @@
 // <summary>
 // </summary>
 //---------------------------------------------------------------------
+/// <reference path='isettings.d.ts' />
+/// <reference path='../typings/tsd.d.ts' />
+"use strict";
 define(["require", "exports", "TFS/Work/RestClient", "TFS/Core/RestClient", "q"], function (require, exports, RestClient, CoreClient, Q) {
-    /// <reference path='isettings.d.ts' />
-    /// <reference path='../typings/tsd.d.ts' />
-    "use strict";
     var Configuration = (function () {
         function Configuration(WidgetHelpers) {
             this.WidgetHelpers = WidgetHelpers;
@@ -84,7 +84,7 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Core/RestClient", "q"]
             return this.WidgetHelpers.WidgetConfigurationSave.Valid(this.getCustomSettings());
         };
         return Configuration;
-    }());
+    })();
     exports.Configuration = Configuration;
     VSS.require(["TFS/Dashboards/WidgetHelpers"], function (WidgetHelpers) {
         WidgetHelpers.IncludeWidgetConfigurationStyles();
@@ -95,3 +95,4 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Core/RestClient", "q"]
         VSS.notifyLoadSucceeded();
     });
 });
+//# sourceMappingURL=configuration.js.map

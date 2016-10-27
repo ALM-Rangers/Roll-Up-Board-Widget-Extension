@@ -8,10 +8,10 @@
 // </copyright>
 // <summary>TypeScript file for Roll-up the board widget extension</summary>
 //---------------------------------------------------------------------
+/// <reference path='../typings/tsd.d.ts' />
+/// <reference path='isettings.d.ts' />
+"use strict";
 define(["require", "exports", "scripts/app"], function (require, exports, RollUpWidget) {
-    /// <reference path='../typings/tsd.d.ts' />
-    /// <reference path='isettings.d.ts' />
-    "use strict";
     VSS.require("TFS/Dashboards/WidgetHelpers", function (WidgetHelpers) {
         WidgetHelpers.IncludeWidgetStyles();
         VSS.register("rollupboardwidget", function () {
@@ -21,3 +21,4 @@ define(["require", "exports", "scripts/app"], function (require, exports, RollUp
         VSS.notifyLoadSucceeded();
     });
 });
+//# sourceMappingURL=appWidget.js.map

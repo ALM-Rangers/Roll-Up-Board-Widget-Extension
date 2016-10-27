@@ -9,10 +9,10 @@
 // <summary>
 // </summary>
 //---------------------------------------------------------------------
+/// <reference path='../typings/jquery/jquery.d.ts' />
+/// <reference path="../typings/tsd.d.ts" />
+"use strict";
 define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/WorkItemTracking/RestClient", "q"], function (require, exports, RestClient, WorkContracts, RestClientWI, Q) {
-    /// <reference path='../typings/jquery/jquery.d.ts' />
-    /// <reference path="../typings/tsd.d.ts" />
-    "use strict";
     var WidgetRollUpBoard = (function () {
         function WidgetRollUpBoard(WidgetHelpers) {
             this.WidgetHelpers = WidgetHelpers;
@@ -494,6 +494,7 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/
             return this.LoadRollUp(widgetSettings);
         };
         return WidgetRollUpBoard;
-    }());
+    })();
     exports.WidgetRollUpBoard = WidgetRollUpBoard;
 });
+//# sourceMappingURL=app.js.map
