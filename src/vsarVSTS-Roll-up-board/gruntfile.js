@@ -11,11 +11,6 @@ module.exports = function (grunt) {
                 stdout: true,
                 stderr: true
             },
-            packagesandbox: {
-                command: "tfx extension create --manifest-globs vss-extension-sandbox.json --publisher DevMikaelKrief --output-path ..\\vsix-sandbox-v1\\",
-                stdout: true,
-                stderr: true
-            },
             update: {
                 command: "npm up --save-dev",
                 stdout: true,
@@ -30,18 +25,13 @@ module.exports = function (grunt) {
 				command: "tsd link",
                 stdout: true,
                 stderr: true
-			},
-            publish: {
-                command: "tfx extension publish --manifest-globs vss-extension.json --share-with mikaelkrief --token vnysvxuktsv2zfco6y3vtv4mdwlrv56efsaaumdhahb6vnlh4eiq",
-                stdout: true,
-                stderr: true
-            }
+			}
         },
         copy: {
             main: {
                 files: [
                   // includes files within path
-                  { expand: true, flatten: true, src: ['node_modules/vss-web-extension-sdk/lib/VSS.SDK.js'], dest: 'scripts/', filter: 'isFile' }
+                  { expand: true, flatten: true, src: ['node_modules/vss-web-extension-sdk/lib/VSS.SDK.js', 'node_modules/vss-web-extension-sdk/lib/VSS.SDK.min.js'], dest: 'scripts/', filter: 'isFile' }
                 ]
             }
         },
@@ -53,7 +43,7 @@ module.exports = function (grunt) {
                     module: 'amd',
                     target: 'es5',
                     sourceMap: true,
-                    declaration: true,
+                    declaration: false,
                     references: ["typings/**/*.d.ts"]
                 }
             }

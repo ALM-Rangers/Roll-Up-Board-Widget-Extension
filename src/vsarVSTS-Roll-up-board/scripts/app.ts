@@ -34,6 +34,9 @@ export class WidgetRollUpBoard {
     public clientwi = RestClientWI.getClient();
     public workItemsTypes: string = "";
     public currentTeamContext: CoreContracts.TeamContext;
+    public boardColumnField: string = "";
+    public boardDoneField: string = "";
+    public boardRowField: string = "";
 
     public LoadRollUp(widgetSettings) {
         TelemetryClient.getClient().trackPageView("RollUpBoard.Index");
@@ -59,7 +62,7 @@ export class WidgetRollUpBoard {
 
                 this.DisplayHtmlRollUpBoard(b);
                 var wilink = VSS.getWebContext().host.uri + VSS.getWebContext().project.name + "/" + VSS.getWebContext().team.name + "/_backlogs/board/" + customSettings.board;
-                $('.widget').off(); 
+                $('.widget').off();
                 $('.widget').on("click", function () {
                     VSS.getService(VSS.ServiceIds.Navigation).then((navigationService: any) => {
                         // Get current hash value from host url 
@@ -103,12 +106,11 @@ export class WidgetRollUpBoard {
         var board = <Board.RollUpBoard>{};
         var columns: Board.Column[] = [];
 
-
-
         this.client.getBoard(this.currentTeamContext, boardName).then((infoboard) => {
             //console.log(infoboard);
             this.SetWorkItemTypeByBoard(infoboard);
-            
+            this.SetFieldsInfosCurrentBoard(infoboard);
+
             board.nbrows = 0;
             var colIndex = 0;
             if (infoboard.rows.length > 1) {
@@ -255,7 +257,7 @@ export class WidgetRollUpBoard {
     private ConstructRowSwimlaneHeader(col: Board.Column, board: Board.RollUpBoard, tr: HTMLTableRowElement, rowindex: number): HTMLTableDataCellElement {
 
         var td = document.createElement("td");
-        
+
         var Text = col.rows.sort(this.SortLowToHighRow)[rowindex].name;
         td.setAttribute("colspan", ((board.columns.length - 2) * 2).toString());
         td.setAttribute("class", "swim");
@@ -329,7 +331,7 @@ export class WidgetRollUpBoard {
         var isRowSwimlaneHeader: boolean = false;
         //If row swimlans exist
         if (board.nbrows > 0) {
-         
+
             for (var i = 0; i < board.nbrows; i++) {
                 if (i % 2 == 0 && board.nbrows > 1) {
                     isRowSwimlaneHeader = true;
@@ -376,7 +378,7 @@ export class WidgetRollUpBoard {
                 table.appendChild(tr);
                 if (i % 2 != 0) {
                     rowindex = rowindex + 1;
-                  
+
                 }
             }
         } else { //if not swimlanes ==> 1 row
@@ -513,35 +515,38 @@ export class WidgetRollUpBoard {
 
         querySelect = querySelect.concat(filterTeamArea);
 
-        
-        var queryWhere = querySelect.concat(" and [System.BoardColumn] = \"" + col.name + "\"");
+        //old : System.BoardColumn
+        var queryWhere = querySelect.concat(" and [" + this.boardColumnField + "] = \"" + col.name + "\"");
         if (row != "NOROW" && row != null) {
-            queryWhere = queryWhere.concat(" and [System.BoardLane] = \"" + row + "\"");
+            //old : System.BoardLane
+            queryWhere = queryWhere.concat(" and [" + this.boardRowField + "] = \"" + row + "\"");
         }
         else if (row == null && col.columnType == WorkContracts.BoardColumnType.InProgress) {//if name of the lane is empty for col type InProgress
-                queryWhere = queryWhere.concat(" and [System.BoardLane] = ''");
+            //old System.BoardLane
+            queryWhere = queryWhere.concat(" and [" + this.boardRowField + "] = ''");
         }
         wiql.query = queryWhere;
 
 
-       
+
         //total wi
         this.clientwi.queryByWiql(wiql, this.currentTeamContext.project, this.currentTeamContext.team).then((result) => {
             nbWi.push(result.workItems.length.toString());
-            console.log("1: "+wiql.query);
+            console.log("1: " + wiql.query);
             if (isSplit) {
+                // old : System.BoardColumnDone
+                wiql.query = queryWhere.concat(" AND [" + this.boardDoneField + "] = False");
 
-                wiql.query = queryWhere.concat(" AND [System.BoardColumnDone] = False");
-                
                 this.clientwi.queryByWiql(wiql, this.currentTeamContext.project, this.currentTeamContext.team).then((result1) => {
-                    console.log("2: " +wiql.query);
+                    console.log("2: " + wiql.query);
                     nbWi.push(result1.workItems.length.toString());
-                    wiql.query = queryWhere.concat(" AND [System.BoardColumnDone] = True");
-                    
+                    // old : System.BoardColumnDone
+                    wiql.query = queryWhere.concat(" AND [" + this.boardDoneField + "] = True");
+
                     this.clientwi.queryByWiql(wiql, this.currentTeamContext.project, this.currentTeamContext.team).then((result2) => {
                         nbWi.push(result2.workItems.length.toString());
-                       
-                        console.log("3: " +wiql.query);//SHOW DEBUG
+
+                        console.log("3: " + wiql.query);//SHOW DEBUG
                         deferred.resolve(nbWi);
                     }, function (reject) {
                         TelemetryClient.getClient().trackException(reject, "RollUpBoard.GetNbWIForColumnAndRow.ColumnDone");
@@ -578,6 +583,24 @@ export class WidgetRollUpBoard {
             else
                 this.workItemsTypes = "\"" + key + "\"";
         }
+    }
+
+    private SetFieldsInfosCurrentBoard(board: WorkContracts.Board) {
+        //Initialize with default values for keep TFS on-prem compatibility
+        this.boardColumnField = "System.BoardColumn";
+        this.boardRowField = "System.BoardLane";
+        this.boardDoneField = "System.BoardColumnDone";
+    
+
+        if (board.fields != undefined) { //check the fields property for compatibility with TFS on-prem
+            this.boardColumnField = board.fields.columnField.referenceName;
+            this.boardDoneField = board.fields.doneField.referenceName;
+            this.boardRowField = board.fields.rowField.referenceName;
+        }
+        
+        console.log("this.boardColumnField : " + this.boardColumnField);
+        console.log("this.boardDoneField : " + this.boardDoneField);
+        console.log("this.boardRowField : " + this.boardRowField);
     }
 
     private SortLowToHighColumn(a: Board.Column, b: Board.Column) {
