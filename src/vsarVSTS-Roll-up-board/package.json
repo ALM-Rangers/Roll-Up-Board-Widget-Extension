@@ -6,9 +6,9 @@
     "grunt-exec": "^0.4.7",
     "grunt-typescript": "0.8.0",
     "jasmine": "^2.4.1",
-    "tfx-cli": "^0.3.15",
+    "tfx-cli": "^0.3.30",
     "tsd": "^0.6.5",
-    "vss-web-extension-sdk": "^1.98.1"
+    "vss-web-extension-sdk": "^1.106.0"
   },
   "name": "rollup",
   "private": true,

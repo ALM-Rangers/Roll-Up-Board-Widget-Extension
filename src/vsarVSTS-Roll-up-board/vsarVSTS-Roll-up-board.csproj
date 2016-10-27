@@ -48,8 +48,8 @@
     <Content Include="img\overview_edit.png" />
     <Content Include="img\overview_sample.png" />
     <Content Include="img\unconfigured-small.png" />
-    <Content Include="scripts\ai.0.22.9-build00167.js" />
-    <Content Include="scripts\ai.0.22.9-build00167.min.js" />
+    <Content Include="scripts\ai.1.0.4-build00190.js" />
+    <Content Include="scripts\ai.1.0.4-build00190.min.js" />
     <Content Include="scripts\VSS.SDK.min.js" />
     <Content Include="ThirdPartyNotices.txt" />
     <Content Include="web.config" />
@@ -73,11 +73,12 @@
     <None Include="package.json" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="scripts\ai.0.22.9-build00167.d.ts" />
+    <TypeScriptCompile Include="scripts\ai.1.0.4-build00190.d.ts" />
     <TypeScriptCompile Include="scripts\app.ts" />
     <TypeScriptCompile Include="scripts\appWidget.ts" />
     <TypeScriptCompile Include="scripts\configuration.ts" />
     <TypeScriptCompile Include="scripts\isettings.d.ts" />
+    <TypeScriptCompile Include="scripts\ref\rmo.d.ts" />
     <TypeScriptCompile Include="scripts\ref\tfs.d.ts" />
     <TypeScriptCompile Include="scripts\ref\vss.d.ts" />
     <TypeScriptCompile Include="scripts\RollUpBoard.ts" />
@@ -85,6 +86,7 @@
     <TypeScriptCompile Include="typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="typings\q\q.d.ts" />
     <TypeScriptCompile Include="typings\knockout\knockout.d.ts" />
+    <TypeScriptCompile Include="typings\requirejs\require.d.ts" />
     <TypeScriptCompile Include="typings\tsd.d.ts" />
   </ItemGroup>
   <ItemGroup>

@@ -25,18 +25,13 @@ module.exports = function (grunt) {
 				command: "tsd link",
                 stdout: true,
                 stderr: true
-			},
-            publish: {
-                command: "tfx extension publish --manifest-globs vss-extension.json --share-with mikaelkrief --token token",
-                stdout: true,
-                stderr: true
-            }
+			}
         },
         copy: {
             main: {
                 files: [
                   // includes files within path
-                  { expand: true, flatten: true, src: ['node_modules/vss-web-extension-sdk/lib/VSS.SDK.js'], dest: 'scripts/', filter: 'isFile' }
+                  { expand: true, flatten: true, src: ['node_modules/vss-web-extension-sdk/lib/VSS.SDK.js', 'node_modules/vss-web-extension-sdk/lib/VSS.SDK.min.js'], dest: 'scripts/', filter: 'isFile' }
                 ]
             }
         },

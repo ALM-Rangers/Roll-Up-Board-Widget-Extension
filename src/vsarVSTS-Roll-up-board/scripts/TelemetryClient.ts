@@ -10,7 +10,7 @@
 // </summary>
 //---------------------------------------------------------------------
 
-/// <reference path="ai.0.22.9-build00167.d.ts" />
+/// <reference path="ai.1.0.4-build00190.d.ts" />
 
 class TelemetryClient {
 
