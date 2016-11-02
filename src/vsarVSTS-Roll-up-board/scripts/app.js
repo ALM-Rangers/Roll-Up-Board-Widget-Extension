@@ -12,7 +12,7 @@
 /// <reference path='../typings/jquery/jquery.d.ts' />
 /// <reference path="../typings/tsd.d.ts" />
 "use strict";
-define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/WorkItemTracking/RestClient", "q"], function (require, exports, RestClient, WorkContracts, RestClientWI, Q) {
+define(["require", "exports", "VSS/Context", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/WorkItemTracking/RestClient", "q"], function (require, exports, Context, RestClient, WorkContracts, RestClientWI, Q) {
     var WidgetRollUpBoard = (function () {
         function WidgetRollUpBoard(WidgetHelpers) {
             this.WidgetHelpers = WidgetHelpers;
@@ -23,6 +23,12 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/
             this.boardDoneField = "";
             this.boardRowField = "";
         }
+        WidgetRollUpBoard.prototype.IsVSTS = function () {
+            return Context.getPageContext().webAccessConfiguration.isHosted;
+        };
+        WidgetRollUpBoard.prototype.EnableAppInsightTelemetry = function () {
+            return this.IsVSTS();
+        };
         WidgetRollUpBoard.prototype.LoadRollUp = function (widgetSettings) {
             var _this = this;
             TelemetryClient.getClient().trackPageView("RollUpBoard.Index");
@@ -50,9 +56,19 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/
                     });
                     $('#loadingwidget').attr("style", "display:none");
                     $('#content').attr("style", "display:block");
-                    TelemetryClient.getClient().trackEvent("RollUpBoard.LoadRollUp", { BoardName: customSettings.board });
+                    if (_this.EnableAppInsightTelemetry()) {
+                        TelemetryClient.getClient().trackEvent("RollUpBoard.LoadRollUp", { BoardName: customSettings.board });
+                    }
+                    else {
+                        console.log("App Insight Telemetry is disabled");
+                    }
                 }, function (reject) {
-                    TelemetryClient.getClient().trackException(reject, "RollUpBoard.LoadRollUp");
+                    if (this.EnableAppInsightTelemetry()) {
+                        TelemetryClient.getClient().trackException(reject, "RollUpBoard.LoadRollUp");
+                    }
+                    else {
+                        console.log("App Insight Telemetry is disabled");
+                    }
                     console.log(reject);
                 });
             }
@@ -98,7 +114,12 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/
                         board.columns = columns;
                         deferred.resolve(board);
                     }, function (reject) {
-                        TelemetryClient.getClient().trackException(reject, "RollUpBoard.GetBoard");
+                        if (this.EnableAppInsightTelemetry()) {
+                            TelemetryClient.getClient().trackException(reject, "RollUpBoard.GetBoard");
+                        }
+                        else {
+                            console.log("App Insight Telemetry is disabled");
+                        }
                         console.log(reject);
                     });
                 });
@@ -362,7 +383,12 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/
                     _this.SetOverMaxLimit(column);
                     deferred.resolve(column);
                 }, function (reject) {
-                    TelemetryClient.getClient().trackException(reject, "RollUpBoard.SetArrayColumnWithRow");
+                    if (this.EnableAppInsightTelemetry()) {
+                        TelemetryClient.getClient().trackException(reject, "RollUpBoard.SetArrayColumnWithRow");
+                    }
+                    else {
+                        console.log("App Insight Telemetry is disabled");
+                    }
                     console.log(reject);
                 });
             }
@@ -375,7 +401,12 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/
                     }
                     deferred.resolve(column);
                 }, function (reject) {
-                    TelemetryClient.getClient().trackException(reject, "RollUpBoard.SetArrayColumnSimple");
+                    if (this.EnableAppInsightTelemetry()) {
+                        TelemetryClient.getClient().trackException(reject, "RollUpBoard.SetArrayColumnSimple");
+                    }
+                    else {
+                        console.log("App Insight Telemetry is disabled");
+                    }
                     console.log(reject);
                 });
             }
@@ -447,7 +478,12 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/
                             console.log("3: " + wiql.query); //SHOW DEBUG
                             deferred.resolve(nbWi);
                         }, function (reject) {
-                            TelemetryClient.getClient().trackException(reject, "RollUpBoard.GetNbWIForColumnAndRow.ColumnDone");
+                            if (this.EnableAppInsightTelemetry()) {
+                                TelemetryClient.getClient().trackException(reject, "RollUpBoard.GetNbWIForColumnAndRow.ColumnDone");
+                            }
+                            else {
+                                console.log("App Insight Telemetry is disabled");
+                            }
                             console.log(reject);
                         });
                     });
@@ -456,7 +492,12 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/
                     deferred.resolve(nbWi);
                 }
             }, function (reject) {
-                TelemetryClient.getClient().trackException(reject, "RollUpBoard.GetNbWIForColumnAndRow");
+                if (this.EnableAppInsightTelemetry()) {
+                    TelemetryClient.getClient().trackException(reject, "RollUpBoard.GetNbWIForColumnAndRow");
+                }
+                else {
+                    console.log("App Insight Telemetry is disabled");
+                }
                 console.log(reject);
             });
             return deferred.promise();
@@ -482,7 +523,6 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/
             this.boardColumnField = "System.BoardColumn";
             this.boardRowField = "System.BoardLane";
             this.boardDoneField = "System.BoardColumnDone";
-            console.log(board.fields);
             if (board.fields != undefined) {
                 this.boardColumnField = board.fields.columnField.referenceName;
                 this.boardDoneField = board.fields.doneField.referenceName;

@@ -12,7 +12,7 @@
 /// <reference path='isettings.d.ts' />
 /// <reference path='../typings/tsd.d.ts' />
 "use strict";
-define(["require", "exports", "TFS/Work/RestClient", "TFS/Core/RestClient", "q"], function (require, exports, RestClient, CoreClient, Q) {
+define(["require", "exports", "TFS/Work/RestClient", "TFS/Core/RestClient", "q", "VSS/Context"], function (require, exports, RestClient, CoreClient, Q, Context) {
     var Configuration = (function () {
         function Configuration(WidgetHelpers) {
             this.WidgetHelpers = WidgetHelpers;
@@ -20,8 +20,19 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Core/RestClient", "q"]
             this.$select = $('#board-dropdown');
             this.client = RestClient.getClient();
         }
+        Configuration.prototype.IsVSTS = function () {
+            return Context.getPageContext().webAccessConfiguration.isHosted;
+        };
+        Configuration.prototype.EnableAppInsightTelemetry = function () {
+            return this.IsVSTS();
+        };
         Configuration.prototype.load = function (widgetSettings, widgetConfigurationContext) {
-            TelemetryClient.getClient().trackPageView("RollUpBoard.Configuration");
+            if (this.EnableAppInsightTelemetry()) {
+                TelemetryClient.getClient().trackPageView("RollUpBoard.Configuration");
+            }
+            else {
+                console.log("App Insight Telemetry is disabled");
+            }
             var _that = this;
             var $boardDropdown = $("#board-dropdown");
             this.widgetConfigurationContext = widgetConfigurationContext;
