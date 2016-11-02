@@ -31,7 +31,12 @@ define(["require", "exports", "VSS/Context", "TFS/Work/RestClient", "TFS/Work/Co
         };
         WidgetRollUpBoard.prototype.LoadRollUp = function (widgetSettings) {
             var _this = this;
-            TelemetryClient.getClient().trackPageView("RollUpBoard.Index");
+            if (this.EnableAppInsightTelemetry()) {
+                TelemetryClient.getClient().trackPageView("RollUpBoard.Index");
+            }
+            else {
+                console.log("App Insight Telemetry is disabled");
+            }
             var customSettings = JSON.parse(widgetSettings.customSettings.data);
             this.currentTeamContext = this.GetCurrentTeamContext();
             var $title = $('.title-header');

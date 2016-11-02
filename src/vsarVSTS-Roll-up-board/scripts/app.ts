@@ -48,7 +48,11 @@ export class WidgetRollUpBoard {
     }
 
     public LoadRollUp(widgetSettings) {
-        TelemetryClient.getClient().trackPageView("RollUpBoard.Index");
+        if (this.EnableAppInsightTelemetry()) {
+            TelemetryClient.getClient().trackPageView("RollUpBoard.Index");
+        } else {
+            console.log("App Insight Telemetry is disabled")
+        }
 
         var customSettings = <ISettings>JSON.parse(widgetSettings.customSettings.data);
         this.currentTeamContext = this.GetCurrentTeamContext();
