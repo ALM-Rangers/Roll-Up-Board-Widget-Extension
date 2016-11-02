@@ -1,6 +1,5 @@
-//----------------------------------------------------------
+//dependencies=
 // Copyright (C) Microsoft Corporation. All rights reserved.
-//----------------------------------------------------------
 ///<reference path='../References/VSS-Common.d.ts' />
 ///<reference path='../References/VSS.SDK.Interfaces.d.ts' />
 ///<reference path='../References/SDK.Interfaces.d.ts' />
@@ -666,8 +665,9 @@ var XDM;
 })(XDM || (XDM = {}));
 var VSS;
 (function (VSS) {
+    // W A R N I N G: if VssSDKVersion changes, the VSS WEB SDK demand resolver needs to be updated with the new version
     VSS.VssSDKVersion = 2.0;
-    VSS.VssSDKRestVersion = "2.2";
+    VSS.VssSDKRestVersion = "2.3";
     var bodyElement;
     var webContext;
     var hostPageContext;
@@ -856,7 +856,7 @@ var VSS;
                             // Merge host data in with any values already set.
                             var newData = handshakeData.sandboxedStorage.localStorage;
                             // Check for any properties written prior to the initial handshake
-                            for (var _i = 0, _a = Object.keys(shimmedLocalStorage) ; _i < _a.length; _i++) {
+                            for (var _i = 0, _a = Object.keys(shimmedLocalStorage); _i < _a.length; _i++) {
                                 var key = _a[_i];
                                 var value = shimmedLocalStorage.getItem(key);
                                 if (value !== newData[key]) {
@@ -865,7 +865,7 @@ var VSS;
                                 }
                             }
                             // Update the stored values
-                            for (var _b = 0, _c = Object.keys(newData) ; _b < _c.length; _b++) {
+                            for (var _b = 0, _c = Object.keys(newData); _b < _c.length; _b++) {
                                 var key = _c[_b];
                                 shimmedLocalStorage.setItem(key, newData[key]);
                             }
@@ -948,7 +948,9 @@ var VSS;
     function issueVssRequire(modules, callback) {
         if (hostPageContext.diagnostics.bundlingEnabled) {
             window.require(["VSS/Bundling"], function (VSS_Bundling) {
-                VSS_Bundling.requireModules(modules, callback);
+                VSS_Bundling.requireModules(modules).spread(function () {
+                    callback.apply(this, arguments);
+                });
             });
         }
         else {
@@ -1126,12 +1128,17 @@ var VSS;
     VSS.getAppToken = getAppToken;
     /**
     * Requests the parent window to resize the container for this extension based on the current extension size.
+    *
+    * @param width Optional width, defaults to scrollWidth
+    * @param height Optional height, defaults to scrollHeight
     */
-    function resize() {
+    function resize(width, height) {
         if (!bodyElement) {
             bodyElement = document.getElementsByTagName("body").item(0);
         }
-        parentChannel.invokeRemoteMethod("resize", "VSS.HostControl", [bodyElement.scrollWidth, bodyElement.scrollHeight]);
+        var newWidth = typeof width === "number" ? width : bodyElement.scrollWidth;
+        var newHeight = typeof height === "number" ? height : bodyElement.scrollHeight;
+        parentChannel.invokeRemoteMethod("resize", "VSS.HostControl", [newWidth, newHeight]);
     }
     VSS.resize = resize;
     function setupAmdLoader() {
@@ -1378,4 +1385,3 @@ var VSS;
         }
     }
 })(VSS || (VSS = {}));
-//dependencies=

@@ -9,16 +9,19 @@
 // <summary>
 // </summary>
 //---------------------------------------------------------------------
+/// <reference path='../typings/jquery/jquery.d.ts' />
+/// <reference path="../typings/tsd.d.ts" />
+"use strict";
 define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/WorkItemTracking/RestClient", "q"], function (require, exports, RestClient, WorkContracts, RestClientWI, Q) {
-    /// <reference path='../typings/jquery/jquery.d.ts' />
-    /// <reference path="../typings/tsd.d.ts" />
-    "use strict";
     var WidgetRollUpBoard = (function () {
         function WidgetRollUpBoard(WidgetHelpers) {
             this.WidgetHelpers = WidgetHelpers;
             this.client = RestClient.getClient();
             this.clientwi = RestClientWI.getClient();
             this.workItemsTypes = "";
+            this.boardColumnField = "";
+            this.boardDoneField = "";
+            this.boardRowField = "";
         }
         WidgetRollUpBoard.prototype.LoadRollUp = function (widgetSettings) {
             var _this = this;
@@ -76,6 +79,7 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/
             this.client.getBoard(this.currentTeamContext, boardName).then(function (infoboard) {
                 //console.log(infoboard);
                 _this.SetWorkItemTypeByBoard(infoboard);
+                _this.SetFieldsInfosCurrentBoard(infoboard);
                 board.nbrows = 0;
                 var colIndex = 0;
                 if (infoboard.rows.length > 1) {
@@ -415,12 +419,15 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/
             });
             filterTeamArea = filterTeamArea.concat(" ) ");
             querySelect = querySelect.concat(filterTeamArea);
-            var queryWhere = querySelect.concat(" and [System.BoardColumn] = \"" + col.name + "\"");
+            //old : System.BoardColumn
+            var queryWhere = querySelect.concat(" and [" + this.boardColumnField + "] = \"" + col.name + "\"");
             if (row != "NOROW" && row != null) {
-                queryWhere = queryWhere.concat(" and [System.BoardLane] = \"" + row + "\"");
+                //old : System.BoardLane
+                queryWhere = queryWhere.concat(" and [" + this.boardRowField + "] = \"" + row + "\"");
             }
             else if (row == null && col.columnType == WorkContracts.BoardColumnType.InProgress) {
-                queryWhere = queryWhere.concat(" and [System.BoardLane] = ''");
+                //old System.BoardLane
+                queryWhere = queryWhere.concat(" and [" + this.boardRowField + "] = ''");
             }
             wiql.query = queryWhere;
             //total wi
@@ -428,11 +435,13 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/
                 nbWi.push(result.workItems.length.toString());
                 console.log("1: " + wiql.query);
                 if (isSplit) {
-                    wiql.query = queryWhere.concat(" AND [System.BoardColumnDone] = False");
+                    // old : System.BoardColumnDone
+                    wiql.query = queryWhere.concat(" AND [" + _this.boardDoneField + "] = False");
                     _this.clientwi.queryByWiql(wiql, _this.currentTeamContext.project, _this.currentTeamContext.team).then(function (result1) {
                         console.log("2: " + wiql.query);
                         nbWi.push(result1.workItems.length.toString());
-                        wiql.query = queryWhere.concat(" AND [System.BoardColumnDone] = True");
+                        // old : System.BoardColumnDone
+                        wiql.query = queryWhere.concat(" AND [" + _this.boardDoneField + "] = True");
                         _this.clientwi.queryByWiql(wiql, _this.currentTeamContext.project, _this.currentTeamContext.team).then(function (result2) {
                             nbWi.push(result2.workItems.length.toString());
                             console.log("3: " + wiql.query); //SHOW DEBUG
@@ -468,6 +477,21 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/
                     this.workItemsTypes = "\"" + key + "\"";
             }
         };
+        WidgetRollUpBoard.prototype.SetFieldsInfosCurrentBoard = function (board) {
+            //Initialize with default values for keep TFS on-prem compatibility
+            this.boardColumnField = "System.BoardColumn";
+            this.boardRowField = "System.BoardLane";
+            this.boardDoneField = "System.BoardColumnDone";
+            console.log(board.fields);
+            if (board.fields != undefined) {
+                this.boardColumnField = board.fields.columnField.referenceName;
+                this.boardDoneField = board.fields.doneField.referenceName;
+                this.boardRowField = board.fields.rowField.referenceName;
+            }
+            console.log("this.boardColumnField : " + this.boardColumnField);
+            console.log("this.boardDoneField : " + this.boardDoneField);
+            console.log("this.boardRowField : " + this.boardRowField);
+        };
         WidgetRollUpBoard.prototype.SortLowToHighColumn = function (a, b) {
             return a.order - b.order;
         };
@@ -494,6 +518,7 @@ define(["require", "exports", "TFS/Work/RestClient", "TFS/Work/Contracts", "TFS/
             return this.LoadRollUp(widgetSettings);
         };
         return WidgetRollUpBoard;
-    }());
+    })();
     exports.WidgetRollUpBoard = WidgetRollUpBoard;
 });
+//# sourceMappingURL=app.js.map

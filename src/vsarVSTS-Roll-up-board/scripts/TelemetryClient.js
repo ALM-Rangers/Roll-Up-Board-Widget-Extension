@@ -9,7 +9,7 @@
 // <summary>
 // </summary>
 //---------------------------------------------------------------------
-/// <reference path="ai.0.22.9-build00167.d.ts" />
+/// <reference path="ai.1.0.4-build00190.d.ts" />
 var TelemetryClient = (function () {
     function TelemetryClient() {
     }
@@ -21,8 +21,7 @@ var TelemetryClient = (function () {
         return this.telemetryClient;
     };
     TelemetryClient.prototype.Init = function () {
-        var Key_dev = "79ea7918-5fbf-4864-9b7d-ee682f226042";
-        var Key_MsLabs = "e381f98d-8bb2-46e7-9b38-2600ac015eb5";
+        var Key_MsLabs = "__INSTRUMENTATIONKEY__";
         try {
             var snippet = {
                 config: {
@@ -104,4 +103,5 @@ var TelemetryClient = (function () {
         }
     };
     return TelemetryClient;
-}());
+})();
+//# sourceMappingURL=TelemetryClient.js.map
