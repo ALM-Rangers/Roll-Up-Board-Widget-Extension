@@ -18,7 +18,7 @@ import CoreClient = require("TFS/Core/RestClient");
 import CoreContracts = require("TFS/Core/Contracts");
 import WorkContracts = require("TFS/Work/Contracts");
 import Q = require("q");
-
+import Context = require("VSS/Context")
 
 export class Configuration {
     widgetConfigurationContext = null;
@@ -29,10 +29,21 @@ export class Configuration {
     constructor(public WidgetHelpers) {
     }
 
+    IsVSTS(): boolean {
+        return Context.getPageContext().webAccessConfiguration.isHosted;
+    }
 
+    EnableAppInsightTelemetry(): boolean {
+        return this.IsVSTS();
+    }
 
     public load(widgetSettings, widgetConfigurationContext) {
-        TelemetryClient.getClient().trackPageView("RollUpBoard.Configuration");
+        if (this.EnableAppInsightTelemetry()) {
+            TelemetryClient.getClient().trackPageView("RollUpBoard.Configuration");
+        } else {
+            console.log("App Insight Telemetry is disabled")
+        }
+
         var _that = this;
 
         var $boardDropdown = $("#board-dropdown");
