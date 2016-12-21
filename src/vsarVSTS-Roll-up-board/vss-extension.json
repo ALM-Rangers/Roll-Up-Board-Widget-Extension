@@ -19,9 +19,19 @@
     "Widget"
   ],
   "links": {
+    "repository": {
+      "uri": "https://github.com/ALM-Rangers/Roll-Up-Board-Widget-Extension"
+    },
+    "issues": {
+      "uri": "https://github.com/ALM-Rangers/Roll-Up-Board-Widget-Extension/issues"
+    },
     "support": {
       "uri": "http://aka.ms/vsarcontact"
     }
+  },
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/ALM-Rangers/Roll-Up-Board-Widget-Extension"
   },
   "branding": {
     "color": "rgb(51,65,133)",

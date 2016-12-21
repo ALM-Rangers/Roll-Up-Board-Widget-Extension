@@ -34,7 +34,7 @@ export class Configuration {
     }
 
     EnableAppInsightTelemetry(): boolean {
-        return this.IsVSTS();
+        return true;
     }
 
     public load(widgetSettings, widgetConfigurationContext) {
