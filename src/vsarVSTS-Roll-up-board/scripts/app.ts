@@ -44,7 +44,7 @@ export class WidgetRollUpBoard {
     }
 
     EnableAppInsightTelemetry(): boolean {
-        return this.IsVSTS();
+        return true;
     }
 
     public LoadRollUp(widgetSettings) {
