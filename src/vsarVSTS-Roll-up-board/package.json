@@ -22,7 +22,8 @@
     "@types/jquery": "^2.0.34",
     "@types/q": "0.0.32",
     "vss-web-extension-sdk": "^2.115.0",
-    "applicationinsights-js": "*"
+    "applicationinsights-js": "*",
+    "telemetryclient":"*"
   },
   "name": "rollup",
   "private": true,
