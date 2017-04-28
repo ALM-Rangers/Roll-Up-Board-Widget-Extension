@@ -1,16 +1,16 @@
-﻿//---------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------
 // <copyright file="RollUpBoard.ts">
 //    This code is licensed under the MIT License.
-//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
-//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
-//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
 //    PARTICULAR PURPOSE AND NONINFRINGEMENT.
 // </copyright>
 // <summary>
 // </summary>
-//---------------------------------------------------------------------
+// ---------------------------------------------------------------------
 
-/// <reference path="../typings/tsd.d.ts" />
+ /// <reference types="vss-web-extension-sdk" />
 "use strict";
 import WorkContracts = require("TFS/Work/Contracts");
 
@@ -40,7 +40,7 @@ export class Column {
     public nbLimit: number;
     public nbwiSplitted: string[];
     public overMaxLimit: boolean;
-    public totalWi : number;
+    public totalWi: number;
 }
 
 export class Row {
