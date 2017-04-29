@@ -1,13 +1,13 @@
 {
   "manifestVersion": 1,
-  "id": "",
-  "version": "",
-  "name": "",
+  "id": "RollUpBoardWidgetTest",
+  "version": "2.0.36",
+  "name": "RollUp Board Test",
   "scopes": [ "vso.work" ],
   "description": "The widget shows the number of cards in each column of the Kanban board.",
-  "publisher": "",
+  "publisher": "DevMikaelKrief",
   "icons": {
-    "default": "img/logo.png"
+    "default": "static/images/logo.png"
   },
   "targets": [
     {
@@ -50,29 +50,27 @@
       "path": "overview.md",
       "addressable": true
     },
-    {
-      "path": "css",
-      "addressable": true
-    },
-    {
-      "path": "img",
-      "addressable": true
-    },
-    {
-      "path": "scripts",
-      "addressable": true
-    },
-    {
-      "path": "index.html",
-      "addressable": true
-    },
-    {
-      "path": "configuration.html",
-      "addressable": true
-    },
-    {
+        {
       "path": "ThirdPartyNotices.txt",
       "addressable": true
+    },
+    {
+      "path": "dist",
+      "addressable": true
+    },
+    {
+      "path": "static",
+      "addressable": true
+    },
+    {
+      "path": "node_modules/vss-web-extension-sdk/lib",
+      "addressable": true,
+      "packagePath": "lib"
+    },
+    {
+      "path": "node_modules/applicationinsights-js/dist",
+      "addressable": true,
+      "packagePath": "lib"
     }
   ],
   "categories": [
@@ -89,9 +87,10 @@
       "properties": {
         "name": "Roll-Up Board",
         "description": "View a board summary, showing number of cards for both columns and swimlanes.",
-        "uri": "index.html",
+        "uri": "static/index.html",
         "isNameConfigurable": true,
-        "previewImageUrl": "img/logo.png",
+        "catalogIconUrl:": "static/images/logo.png",
+        "previewImageUrl": "static/images/logo.png",
         "supportedSizes": [
           {
             "rowSpan": 1,
@@ -117,19 +116,22 @@
             "rowSpan": 3,
             "columnSpan": 4
           }
-
         ],
-        "supportedScopes": [ "project_team" ]
+        "supportedScopes": [
+          "project_team"
+        ]
       }
     },
     {
       "id": "rollupboardwidget-Configuration",
       "type": "ms.vss-dashboards-web.widget-configuration",
-      "targets": [ "ms.vss-dashboards-web.widget-configuration" ],
+      "targets": [
+        "ms.vss-dashboards-web.widget-configuration"
+      ],
       "properties": {
         "name": "Roll-Up Board Configuration",
         "description": "Configure Roll-Up Board widget.",
-        "uri": "configuration.html"
+        "uri": "static/configuration.html"
       }
     }
   ]

@@ -1,0 +1,15 @@
+﻿{
+  "compilerOptions": {
+    "module": "amd",
+    "moduleResolution": "node",
+    "target": "es5",
+    "rootDir": "scripts/",
+    "outDir": "dist/",
+    "types": [
+      "vss-web-extension-sdk"
+    ]
+  },
+  "files": [
+    "scripts/WidgetRollUpBoard.ts","scripts/configuration.ts","scripts/RollUpBoard.ts","scripts/isettings.d.ts"
+  ]
+}
