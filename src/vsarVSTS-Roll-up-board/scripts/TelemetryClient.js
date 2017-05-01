@@ -1,107 +1,83 @@
-//---------------------------------------------------------------------
-// <copyright file="TelemetryClient.ts">
-//    This code is licensed under the MIT License.
-//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
-//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
-//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
-//    PARTICULAR PURPOSE AND NONINFRINGEMENT.
-// </copyright>
-// <summary>
-// </summary>
-//---------------------------------------------------------------------
-/// <reference path="ai.1.0.4-build00190.d.ts" />
-var TelemetryClient = (function () {
-    function TelemetryClient() {
-    }
-    TelemetryClient.getClient = function () {
-        if (!this.telemetryClient) {
-            this.telemetryClient = new TelemetryClient();
-            this.telemetryClient.Init();
+define(["require", "exports", "applicationinsights-js"], function (require, exports, applicationinsights_js_1) {
+    "use strict";
+    var TelemetryClientSettings = (function () {
+        function TelemetryClientSettings() {
         }
-        return this.telemetryClient;
-    };
-    TelemetryClient.prototype.Init = function () {
-        var Key_MsLabs = "__INSTRUMENTATIONKEY__";
-        try {
-            var snippet = {
-                config: {
-                    instrumentationKey: Key_MsLabs,
-                }
+        return TelemetryClientSettings;
+    }());
+    exports.TelemetryClientSettings = TelemetryClientSettings;
+    var TelemetryClient = (function () {
+        function TelemetryClient() {
+            this.IsAvailable = true;
+        }
+        TelemetryClient.getClient = function (settings) {
+            if (!this._instance) {
+                console.log("Creating new TelemetryClient!");
+                this._instance = new TelemetryClient();
+                this._instance.Init(settings);
+            }
+            return this._instance;
+        };
+        TelemetryClient.prototype.Init = function (settings) {
+            console.debug("TelemetryClient settings key: " + settings.key);
+            console.debug("TelemetryClient settings extension context: " + settings.extensioncontext);
+            var config = {
+                instrumentationKey: settings.key
             };
-            var x = VSS.getExtensionContext();
-            var init = new Microsoft.ApplicationInsights.Initialization(snippet);
-            this.appInsightsClient = init.loadAppInsights();
-            var webContext = VSS.getWebContext();
-            this.appInsightsClient.setAuthenticatedUserContext(webContext.user.id, webContext.collection.id);
-        }
-        catch (e) {
-            this.appInsightsClient = null;
-            console.log(e);
-        }
-    };
-    TelemetryClient.prototype.startTrackPageView = function (name) {
-        try {
-            if (this.appInsightsClient != null) {
-                this.appInsightsClient.startTrackPage(name);
+            this.ExtensionContext = settings.extensioncontext;
+            try {
+                var webContext = VSS.getWebContext();
+                applicationinsights_js_1.AppInsights.downloadAndSetup(config);
+                applicationinsights_js_1.AppInsights.setAuthenticatedUserContext(webContext.user.id, webContext.collection.id);
             }
-        }
-        catch (e) {
-            console.log(e);
-        }
-    };
-    TelemetryClient.prototype.stopTrackPageView = function (name) {
-        try {
-            if (this.appInsightsClient != null) {
-                this.appInsightsClient.stopTrackPage(name);
+            catch (e) {
+                console.log(e);
             }
-        }
-        catch (e) {
-            console.log(e);
-        }
-    };
-    TelemetryClient.prototype.trackPageView = function (name, url, properties, measurements, duration) {
-        try {
-            if (this.appInsightsClient != null) {
-                this.appInsightsClient.trackPageView("RollUpBoardWidget." + name, url, properties, measurements, duration);
+        };
+        TelemetryClient.prototype.trackPageView = function (name, url, properties, measurements, duration) {
+            try {
+                applicationinsights_js_1.AppInsights.trackPageView(this.ExtensionContext + "." + name, url, properties, measurements, duration);
+                applicationinsights_js_1.AppInsights.flush();
             }
-        }
-        catch (e) {
-            console.log(e);
-        }
-    };
-    TelemetryClient.prototype.trackEvent = function (name, properties, measurements) {
-        try {
-            if (this.appInsightsClient != null) {
-                this.appInsightsClient.trackEvent("RollUpBoardWidget." + name, properties, measurements);
-                this.appInsightsClient.flush();
+            catch (e) {
+                console.log(e);
             }
-        }
-        catch (e) {
-            console.log(e);
-        }
-    };
-    TelemetryClient.prototype.trackException = function (exception, handledAt, properties, measurements) {
-        try {
-            if (this.appInsightsClient != null) {
-                this.appInsightsClient.trackException(exception, handledAt, properties, measurements);
-                this.appInsightsClient.flush();
+        };
+        TelemetryClient.prototype.trackEvent = function (name, properties, measurements) {
+            try {
+                console.log("Tracking event: " + this.ExtensionContext + "." + name);
+                applicationinsights_js_1.AppInsights.trackEvent(this.ExtensionContext + "." + name, properties, measurements);
+                applicationinsights_js_1.AppInsights.flush();
             }
-        }
-        catch (e) {
-            console.log(e);
-        }
-    };
-    TelemetryClient.prototype.trackMetric = function (name, average, sampleCount, min, max, properties) {
-        try {
-            if (this.appInsightsClient != null) {
-                this.appInsightsClient.trackMetric("RollUpBoardWidget." + name, average, sampleCount, min, max, properties);
-                this.appInsightsClient.flush();
+            catch (e) {
+                console.log(e);
             }
-        }
-        catch (e) {
-            console.log(e);
-        }
-    };
-    return TelemetryClient;
-})();
-//# sourceMappingURL=TelemetryClient.js.map
+        };
+        TelemetryClient.prototype.trackException = function (exceptionMessage, handledAt, properties, measurements) {
+            try {
+                console.error(exceptionMessage);
+                var error = {
+                    name: this.ExtensionContext + "." + handledAt,
+                    message: exceptionMessage
+                };
+                applicationinsights_js_1.AppInsights.trackException(error, handledAt, properties, measurements);
+                applicationinsights_js_1.AppInsights.flush();
+            }
+            catch (e) {
+                console.log(e);
+            }
+        };
+        TelemetryClient.prototype.trackMetric = function (name, average, sampleCount, min, max, properties) {
+            try {
+                applicationinsights_js_1.AppInsights.trackMetric(this.ExtensionContext + "." + name, average, sampleCount, min, max, properties);
+                applicationinsights_js_1.AppInsights.flush();
+            }
+            catch (e) {
+                console.log(e);
+            }
+        };
+        return TelemetryClient;
+    }());
+    exports.TelemetryClient = TelemetryClient;
+});
+//# sourceMappingURL=telemetryclient.js.map

@@ -28,24 +28,18 @@
             </div>
         </div>
     </div>
-    <script src="scripts/VSS.SDK.min.js"></script>
-    <script src="scripts/ai.1.0.4-build00190.min.js"></script>
-    <script src="scripts/TelemetryClient.js"></script>
+    <script src="../lib/VSS.SDK.min.js"></script>
+    <script src="../lib/ai.0.js"></script>
     <script type="text/javascript">
         VSS.init({
             explicitNotifyLoaded: true,
             usePlatformStyles: true,
             usePlatformScripts: true,
-            setupModuleLoader: true,
-            moduleLoaderConfig: {
-                paths: {
-                    "Scripts": "scripts"
-                }
-            }
+            setupModuleLoader: true
         });
 
         VSS.ready(function () {
-            require(["Scripts/configuration"], function (configuration) { });
+            VSS.require(["../dist/configuration"], function (configuration) { });
         });
     </script>
 </body>
