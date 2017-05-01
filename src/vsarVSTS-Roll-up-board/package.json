@@ -2,6 +2,7 @@
   "scripts": {
     "copy": "cpx node_modules/telemetryclient/lib/*.* scripts",
     "build": "npm run copy && npm run lint && npm run clean && webpack --progress --colors --config webpack.config.js --output-path ./dist -p",
+    "postbuild" : "rimraf ./scripts/telemetryclient.js && rimraf ./scripts/telemetryclient.d.ts",
     "package": "tfx extension create  --rev-version",
     "gallery-publish": "tfx extension publish --rev-version",
     "clean": "rimraf ./dist && rimraf ./*.vsix",
