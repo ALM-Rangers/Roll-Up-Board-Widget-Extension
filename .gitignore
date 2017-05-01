@@ -10,3 +10,6 @@ packages/
 obj/
 bin/
 dist/
+scripts/TelemetryClient.js
+scripts/TelemetryClient.d.ts
+*.vsix
