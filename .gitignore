@@ -1,8 +1,4 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-*.map
+﻿*.map
 *.suo
 .vs/
 node_modules/
@@ -10,6 +6,6 @@ packages/
 obj/
 bin/
 dist/
-scripts/TelemetryClient.js
-scripts/TelemetryClient.d.ts
+**/telemetryclient.js
+**/telemetryclient.d.ts
 *.vsix
