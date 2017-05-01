@@ -1,8 +1,10 @@
 # Roll-up Board Widget Extension
 
+The **Roll-up Board Widget** displays an aggregated view of your backlog boards on your dashboards.
+
 ![](https://almrangers.visualstudio.com/_apis/public/build/definitions/7f3cfb9a-d1cb-4e66-9d36-1af87b906fe9/103/badge)
 
-The **Roll-up Board Widget** displays an aggregated view of your backlog boards on your dashboards.
+> ![Gears](Gears.png) Interested how our CI/CD pipeline works? Read [Set up a CI/CD pipeline with package management for your Team Services extension](https://blogs.msdn.microsoft.com/visualstudioalmrangers/2017/04/30/setup-a-cicd-pipeline-with-package-management-for-your-team-services-extension/) to learn more. 
 
 ![sample](src/vsarVSTS-Roll-up-board/static/images/overview_sample.png)
 
