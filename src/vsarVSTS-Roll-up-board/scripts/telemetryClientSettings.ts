@@ -14,5 +14,8 @@ import * as tc from "TelemetryClient";
 
 export const settings: tc.TelemetryClientSettings = {
     key: "__INSTRUMENTATIONKEY__",
-    extensioncontext: "RollUpBoardWidget"
+    extensioncontext: "RollUpBoardWidget",
+    disableTelemetry: "false",
+    disableAjaxTracking: "__disableAjaxTracking__",
+    enableDebug: "__enableDebug__"
 };
