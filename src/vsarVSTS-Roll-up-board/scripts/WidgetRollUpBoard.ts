@@ -21,7 +21,7 @@ import WorkItemsContracts = require("TFS/WorkItemTracking/Contracts");
 import Q = require("q");
 import Board = require("./RollUpBoard");
 
-import * as tc from "./TelemetryClient";
+import * as tc from "telemetryclient-team-services-extension";
 import telemetryClientSettings = require("./telemetryClientSettings");
 
 export class WidgetRollUpBoard {
