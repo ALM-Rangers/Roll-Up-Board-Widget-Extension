@@ -20,7 +20,7 @@ import WorkContracts = require("TFS/Work/Contracts");
 import Q = require("q");
 import Context = require("VSS/Context");
 
-import * as telemclient from "./TelemetryClient";
+import * as telemclient from "telemetryclient-team-services-extension";
 import telemetryClientSettings = require("./telemetryClientSettings");
 
 export class Configuration {
