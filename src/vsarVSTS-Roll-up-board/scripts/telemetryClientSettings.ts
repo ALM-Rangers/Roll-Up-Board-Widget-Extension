@@ -10,7 +10,7 @@
 // </summary>
 // ---------------------------------------------------------------------
 
-import * as tc from "TelemetryClient";
+import * as tc from "telemetryclient-team-services-extension";
 
 export const settings: tc.TelemetryClientSettings = {
     key: "__INSTRUMENTATIONKEY__",
