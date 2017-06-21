@@ -27,15 +27,9 @@ There is an oddity that occurs when a work item appears on several boards and ha
 
 ### Learn more
 
-The [source](https://github.com/ALM-Rangers/Roll-Up-Board-Widget-Extension) to this extension is available. Feel free to take, fork, and extend.
-
-[View Notices](https://marketplace.visualstudio.com/_apis/public/gallery/publisher/ms-devlabs/extension/RollUpBoard/latest/assetbyname/ThirdPartyNotices.txt) for third party software included in this extension.
-
 > Microsoft DevLabs is an outlet for experiments from Microsoft, experiments that represent some of the latest ideas around developer tools. Solutions in this category are designed for broad usage, and you are encouraged to use and provide feedback on them; however, these extensions are not supported nor are any commitments made as to their longevity.
 
-### Minimum supported environments ###
-- Visual Studio Team Services
-- Team Foundation Server 2015 Update 3 (or higher)
+[View Notices](https://marketplace.visualstudio.com/_apis/public/gallery/publisher/ms-devlabs/extension/RollUpBoard/latest/assetbyname/ThirdPartyNotices.txt) for third party software included in this extension.
 
 ### Contributors ###
 We thank the following contributor(s) for this extension: Mikael Krief.
@@ -44,7 +38,7 @@ We thank the following contributor(s) for this extension: Mikael Krief.
 
 We need your feedback! Here are some ways to connect with us:
 
-- Add a review below.
+- Add a comment in the Q&A section below and please add an actionable review.
 - Send us an [email](mailto://mktdevlabs@microsoft.com).
 
 Review the [list of features and resolved issues of latest tools and extensions](https://aka.ms/vsarreleases) for information on the latest releases.
