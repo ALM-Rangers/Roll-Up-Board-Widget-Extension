@@ -3,7 +3,9 @@
   "id": "",
   "version": "",
   "name": "",
-  "scopes": [ "vso.work" ],
+  "scopes": [
+    "vso.work"
+  ],
   "description": "The widget shows the number of cards in each column of the Kanban board.",
   "publisher": "",
   "icons": {
@@ -50,7 +52,7 @@
       "path": "overview.md",
       "addressable": true
     },
-        {
+    {
       "path": "ThirdPartyNotices.txt",
       "addressable": true
     },

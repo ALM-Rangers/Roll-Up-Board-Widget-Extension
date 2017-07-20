@@ -10,7 +10,7 @@
 // </summary>
 // ---------------------------------------------------------------------
 
- /// <reference types="vss-web-extension-sdk" />
+/// <reference types="vss-web-extension-sdk" />
 "use strict";
 import Context = require("VSS/Context");
 import RestClient = require("TFS/Work/RestClient");
@@ -36,20 +36,25 @@ export class WidgetRollUpBoard {
     public boardColumnField: string = "";
     public boardDoneField: string = "";
     public boardRowField: string = "";
+    public logs: any = {};
 
     IsVSTS(): boolean {
         return Context.getPageContext().webAccessConfiguration.isHosted;
     }
 
     EnableAppInsightTelemetry(): boolean {
-        return true;
+        const isEnabled = true;
+        this.logs.appInsights.isEnabled = isEnabled;
+        return isEnabled;
     }
 
     public LoadRollUp(widgetSettings) {
+
+        this.logs.appInsights = {};
+        this.logs.queries = [];
+
         if (this.EnableAppInsightTelemetry()) {
             tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackPageView("RollUpBoard.Index");
-        } else {
-            console.log("App Insight Telemetry is disabled");
         }
 
         let customSettings = <ISettings>JSON.parse(widgetSettings.customSettings.data);
@@ -83,15 +88,11 @@ export class WidgetRollUpBoard {
 
                 if (this.EnableAppInsightTelemetry()) {
                     tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackEvent("RollUpBoard.LoadRollUp", { BoardName: customSettings.board });
-                } else {
-                    console.log("App Insight Telemetry is disabled");
                 }
 
             }, function (reject) {
                 if (this.EnableAppInsightTelemetry()) {
                     tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.LoadRollUp");
-                } else {
-                    console.log("App Insight Telemetry is disabled");
                 }
                 console.log(reject);
             });
@@ -101,6 +102,7 @@ export class WidgetRollUpBoard {
             $("#loadingwidget").attr("style", "display:none");
             $("#configwidget").attr("style", "display:block");
         }
+        console.log(this.logs);
         return this.WidgetHelpers.WidgetStatusHelper.Success();
     }
 
@@ -145,9 +147,6 @@ export class WidgetRollUpBoard {
                 }, function (reject) {
                     if (this.EnableAppInsightTelemetry()) {
                         tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.GetBoard");
-                    }
-                    else {
-                        console.log("App Insight Telemetry is disabled");
                     }
                     console.log(reject);
                 });
@@ -446,8 +445,6 @@ export class WidgetRollUpBoard {
             }, function (reject) {
                 if (this.EnableAppInsightTelemetry()) {
                     tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.SetArrayColumnWithRow");
-                } else {
-                    console.log("App Insight Telemetry is disabled");
                 }
                 console.log(reject);
             });
@@ -463,8 +460,6 @@ export class WidgetRollUpBoard {
             }, function (reject) {
                 if (this.EnableAppInsightTelemetry()) {
                     tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.SetArrayColumnSimple");
-                } else {
-                    console.log("App Insight Telemetry is disabled");
                 }
                 console.log(reject);
             });
@@ -493,7 +488,7 @@ export class WidgetRollUpBoard {
         let deferred = $.Deferred<string[]>();
         let wiql = <WorkItemsContracts.Wiql>{};
 
-        let querySelect = "SELECT [System.Id] FROM WorkItems WHERE [System.TeamProject] = \"" + VSS.getWebContext().project.name + "\" AND [System.WorkItemType] IN (" + this.workItemsTypes + ")";
+        let querySelect = "SELECT [System.Id] FROM WorkItems WHERE [System.TeamProject] = \"" + VSS.getWebContext().project.name + "\" AND [System.WorkItemType] IN (" + this.workItemsTypes + ") AND [System.State] <> \"Removed\"";
 
         // team area
         let filterTeamArea = " AND ( ";
@@ -530,27 +525,35 @@ export class WidgetRollUpBoard {
         // total wi
         this.clientwi.queryByWiql(wiql, this.currentTeamContext.project, this.currentTeamContext.team).then((result) => {
             nbWi.push(result.workItems.length.toString());
-            console.log("1: " + wiql.query);
+            // console.log("1: " + wiql.query);
+
+            this.logs.queries.push(
+                { "column": col.name, "row": row, "query": wiql.query, "wi": result.workItems }
+            );
+
             if (isSplit) {
                 // old : System.BoardColumnDone
                 wiql.query = queryWhere.concat(" AND [" + this.boardDoneField + "] = False");
 
                 this.clientwi.queryByWiql(wiql, this.currentTeamContext.project, this.currentTeamContext.team).then((result1) => {
-                    console.log("2: " + wiql.query);
+                    // console.log("2: " + wiql.query);
                     nbWi.push(result1.workItems.length.toString());
+                    this.logs.queries.push(
+                        { "column": col.name, "row": row, "query": wiql.query, "wi": result1.workItems }
+                    );
                     // old : System.BoardColumnDone
                     wiql.query = queryWhere.concat(" AND [" + this.boardDoneField + "] = True");
 
                     this.clientwi.queryByWiql(wiql, this.currentTeamContext.project, this.currentTeamContext.team).then((result2) => {
                         nbWi.push(result2.workItems.length.toString());
-
-                        console.log("3: " + wiql.query); // SHOW DEBUG
+                        this.logs.queries.push(
+                            { "column": col.name, "row": row, "query": wiql.query, "wi": result2.workItems }
+                        );
+                        // console.log("3: " + wiql.query); // SHOW DEBUG
                         deferred.resolve(nbWi);
                     }, function (reject) {
                         if (this.EnableAppInsightTelemetry()) {
                             tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.GetNbWIForColumnAndRow.ColumnDone");
-                        } else {
-                            console.log("App Insight Telemetry is disabled");
                         }
                         console.log(reject);
                     });
@@ -561,9 +564,7 @@ export class WidgetRollUpBoard {
             }
         }, function (reject) {
             if (this.EnableAppInsightTelemetry()) {
-               tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.GetNbWIForColumnAndRow");
-            } else {
-                console.log("App Insight Telemetry is disabled");
+                tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.GetNbWIForColumnAndRow");
             }
             console.log(reject);
         });
@@ -603,10 +604,10 @@ export class WidgetRollUpBoard {
             this.boardDoneField = board.fields.doneField.referenceName;
             this.boardRowField = board.fields.rowField.referenceName;
         }
-
-        console.log("this.boardColumnField : " + this.boardColumnField);
-        console.log("this.boardDoneField : " + this.boardDoneField);
-        console.log("this.boardRowField : " + this.boardRowField);
+        this.logs.boardcolumn = {};
+        this.logs.boardcolumn.boardColumnField = this.boardColumnField;
+        this.logs.boardcolumn.boardDoneField = this.boardDoneField;
+        this.logs.boardcolumn.boardRowField = this.boardRowField;
     }
 
     private SortLowToHighColumn(a: Board.Column, b: Board.Column) {
