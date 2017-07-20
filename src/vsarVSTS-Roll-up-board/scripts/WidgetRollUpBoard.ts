@@ -43,16 +43,19 @@ export class WidgetRollUpBoard {
     }
 
     EnableAppInsightTelemetry(): boolean {
-        return true;
+        const isEnabled = true;
+        this.logs.appInsights.isEnabled = isEnabled;
+        return isEnabled;
     }
 
     public LoadRollUp(widgetSettings) {
+
+        this.logs.appInsights = {};
+        this.logs.queries = [];
+
         if (this.EnableAppInsightTelemetry()) {
             tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackPageView("RollUpBoard.Index");
-        } else {
-            console.log("App Insight Telemetry is disabled");
         }
-        this.logs.queries = [];
 
         let customSettings = <ISettings>JSON.parse(widgetSettings.customSettings.data);
         this.currentTeamContext = this.GetCurrentTeamContext();
@@ -85,15 +88,11 @@ export class WidgetRollUpBoard {
 
                 if (this.EnableAppInsightTelemetry()) {
                     tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackEvent("RollUpBoard.LoadRollUp", { BoardName: customSettings.board });
-                } else {
-                    console.log("App Insight Telemetry is disabled");
                 }
 
             }, function (reject) {
                 if (this.EnableAppInsightTelemetry()) {
                     tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.LoadRollUp");
-                } else {
-                    console.log("App Insight Telemetry is disabled");
                 }
                 console.log(reject);
             });
@@ -148,9 +147,6 @@ export class WidgetRollUpBoard {
                 }, function (reject) {
                     if (this.EnableAppInsightTelemetry()) {
                         tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.GetBoard");
-                    }
-                    else {
-                        console.log("App Insight Telemetry is disabled");
                     }
                     console.log(reject);
                 });
@@ -449,8 +445,6 @@ export class WidgetRollUpBoard {
             }, function (reject) {
                 if (this.EnableAppInsightTelemetry()) {
                     tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.SetArrayColumnWithRow");
-                } else {
-                    console.log("App Insight Telemetry is disabled");
                 }
                 console.log(reject);
             });
@@ -466,8 +460,6 @@ export class WidgetRollUpBoard {
             }, function (reject) {
                 if (this.EnableAppInsightTelemetry()) {
                     tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.SetArrayColumnSimple");
-                } else {
-                    console.log("App Insight Telemetry is disabled");
                 }
                 console.log(reject);
             });
@@ -562,8 +554,6 @@ export class WidgetRollUpBoard {
                     }, function (reject) {
                         if (this.EnableAppInsightTelemetry()) {
                             tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.GetNbWIForColumnAndRow.ColumnDone");
-                        } else {
-                            console.log("App Insight Telemetry is disabled");
                         }
                         console.log(reject);
                     });
@@ -575,8 +565,6 @@ export class WidgetRollUpBoard {
         }, function (reject) {
             if (this.EnableAppInsightTelemetry()) {
                 tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.GetNbWIForColumnAndRow");
-            } else {
-                console.log("App Insight Telemetry is disabled");
             }
             console.log(reject);
         });
@@ -616,10 +604,10 @@ export class WidgetRollUpBoard {
             this.boardDoneField = board.fields.doneField.referenceName;
             this.boardRowField = board.fields.rowField.referenceName;
         }
-
-        console.log("this.boardColumnField : " + this.boardColumnField);
-        console.log("this.boardDoneField : " + this.boardDoneField);
-        console.log("this.boardRowField : " + this.boardRowField);
+        this.logs.boardcolumn = {};
+        this.logs.boardcolumn.boardColumnField = this.boardColumnField;
+        this.logs.boardcolumn.boardDoneField = this.boardDoneField;
+        this.logs.boardcolumn.boardRowField = this.boardRowField;
     }
 
     private SortLowToHighColumn(a: Board.Column, b: Board.Column) {

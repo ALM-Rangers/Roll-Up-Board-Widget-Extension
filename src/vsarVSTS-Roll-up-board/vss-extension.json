@@ -1,11 +1,13 @@
 {
   "manifestVersion": 1,
-  "id": "RollUpBoardWidgetTest",
-  "version": "3.3.194",
-  "name": "RollUp Board Test",
-  "scopes": [ "vso.work" ],
+  "id": "",
+  "version": "",
+  "name": "",
+  "scopes": [
+    "vso.work"
+  ],
   "description": "The widget shows the number of cards in each column of the Kanban board.",
-   "publisher": "DevMikaelKrief",
+  "publisher": "",
   "icons": {
     "default": "static/images/logo.png"
   },
@@ -50,7 +52,7 @@
       "path": "overview.md",
       "addressable": true
     },
-        {
+    {
       "path": "ThirdPartyNotices.txt",
       "addressable": true
     },
