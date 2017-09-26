@@ -9,3 +9,4 @@ dist/
 **/telemetryclient.js
 **/telemetryclient.d.ts
 *.vsix
+sync.cmd
