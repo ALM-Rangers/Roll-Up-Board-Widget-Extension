@@ -26,28 +26,49 @@
             background-repeat: no-repeat;
             background-size: contain;
         }
+        .warnImage {
+            background-image: url('images/warning-icon.png');
+            height: 45px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+        .errorImage {
+            background-image: url('images/error-icon.png');
+            height: 40px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
     </style>
 </head>
 
 <body>
 
     <div class="widget" style="cursor:pointer">
-
         <div class="title-header" style="font-size:13px"></div>
         <div id="content">
             <table id="tableboard"></table>
         </div>
-
-        <div class="defaultcontent" style="display: block;" id="configwidget">
+        <div class="defaultcontent" style="display: none;" id="configwidget">
             <div class="widget-message-text">Configure widget</div>
             <div class="bgImage"></div>
+            <span class="link-text"></span>
+        </div>
+        <div class="defaultcontent" style="display: none;" id="boardhidden">
+            <div class="widget-message-text">Warning: This board is hidden!<br />Reconfigure it and choose another board</div>
+            <div class="warnImage"></div>
+            <span class="link-text"></span>
+        </div>
+        <div class="defaultcontent" style="display: none;" id="boardnotfound">
+            <div class="widget-message-text">Error: This board was renamed!<br />Reconfigure it and choose the desired board</div>
+            <div class="errorImage"></div>
             <span class="link-text"></span>
         </div>
         <div class="loadingcontent" style="display: block;" id="loadingwidget">
             <div style="background-color:lightgray;height:100px;opacity:0.5"></div>
         </div>
     </div>
-
 
     <script src="../lib/VSS.SDK.min.js"></script>
     <script src="../lib/ai.0.js"></script>
@@ -58,7 +79,6 @@
             setupModuleLoader: true,
             usePlatformScripts: true,
             usePlatformStyles: true
-
         });
 
         // Wait for the SDK to be initialized
@@ -66,8 +86,5 @@
             VSS.require(["../dist/WidgetRollUpBoard"], function (app) { });
         });
     </script>
-
-
 </body>
-
 </html>

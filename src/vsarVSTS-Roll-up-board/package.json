@@ -2,9 +2,9 @@
   "scripts": {
     "copy": "cpx node_modules/telemetryclient-team-services-extension/lib/*.* scripts",
     "build": "npm run copy && npm run lint && npm run clean && npm run webpack",
-    "postbuild" : "rimraf ./scripts/telemetryclient.js && rimraf ./scripts/telemetryclient.d.ts",
+    "postbuild": "rimraf ./scripts/telemetryclient.js && rimraf ./scripts/telemetryclient.d.ts && npm run gallery-publish",
     "package": "tfx extension create  --rev-version",
-    "gallery-publish": "tfx extension publish --rev-version",
+    "gallery-publish": "tfx extension publish --rev-version  --token 53plbqfsibqnynajzc3ac2gvayqdaz2kz65bv7a47nmjduwmbruq",
     "clean": "rimraf ./dist && rimraf ./*.vsix",
     "lint": "tslint -c tslint.json \"scripts/*.ts",
     "webpack": "webpack --progress --colors --config webpack.config.js --output-path ./dist -p"
@@ -14,8 +14,8 @@
     "cpx": "^1.5.0",
     "jasmine": "^2.5.1",
     "rimraf": "^2.5.4",
-    "typescript": "^2.1.4",
-    "ts-loader":"^2.0.3",
+    "typescript": "2.3.4",
+    "ts-loader": "^2.0.3",
     "tslint": "^4.3.1",
     "tslint-loader": "^3.3.0",
     "webpack": "^1.14.0"
@@ -26,7 +26,7 @@
     "@microsoft/gulp-core-build-typescript": "^2.4.4",
     "vss-web-extension-sdk": "^2.115.0",
     "applicationinsights-js": "*",
-    "telemetryclient-team-services-extension":"*"
+    "telemetryclient-team-services-extension": "*"
   },
   "name": "rollup",
   "private": true,

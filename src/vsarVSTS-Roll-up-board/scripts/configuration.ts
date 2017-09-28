@@ -10,7 +10,7 @@
 // </summary>
 // ---------------------------------------------------------------------
 
- /// <reference types="vss-web-extension-sdk" />
+/// <reference types="vss-web-extension-sdk" />
 /// <reference path="isettings.d.ts" />
 "use strict";
 import RestClient = require("TFS/Work/RestClient");
@@ -19,9 +19,10 @@ import CoreContracts = require("TFS/Core/Contracts");
 import WorkContracts = require("TFS/Work/Contracts");
 import Q = require("q");
 import Context = require("VSS/Context");
-
 import * as telemclient from "telemetryclient-team-services-extension";
 import telemetryClientSettings = require("./telemetryClientSettings");
+
+import rollupboardServices = require("./RollUpBoardServices");
 
 export class Configuration {
     widgetConfigurationContext = null;
@@ -29,6 +30,8 @@ export class Configuration {
     $select = $("#board-dropdown");
     public client = RestClient.getClient();
     public _widgetHelpers;
+    public teamSettingsVisibility: any = {};
+    public BacklogConfiguration: { id: string, name: string, color: string, visible: boolean }[] = [];
     constructor(public WidgetHelpers) {
     }
 
@@ -48,7 +51,6 @@ export class Configuration {
         }
 
         let _that = this;
-
         this.widgetConfigurationContext = widgetConfigurationContext;
 
         this.GetProjectTemplate().then(() => { });
@@ -57,19 +59,35 @@ export class Configuration {
         let tc = <CoreContracts.TeamContext>{};
         tc.projectId = VSS.getWebContext().project.id;
         tc.teamId = VSS.getWebContext().team.id;
-        this.PopulateBoardDropdown().then((boards) => {
-            // console.log(boards);
-            boards.forEach((board) => {
 
+        rollupboardServices.RollUpBoardServices.GetBacklogConfiguration().then((backlogconf) => {
+            // Portfolio Backlog
+            backlogconf.portfolioBacklogs.sort(function (a, b) {
+                return a.rank - b.rank;
+            });
+            backlogconf.portfolioBacklogs.reverse();
+
+            backlogconf.portfolioBacklogs.forEach(element => {
+                if (!backlogconf.hiddenBacklogs.includes(element.id)) {
+                    let opt = document.createElement("option");
+                    opt.value = element.name;
+                    let optText = document.createTextNode(element.name);
+                    opt.appendChild(optText);
+                    $queryDropdown.appendChild(opt);
+                }
+            });
+
+            // Backlog Items
+            if (!backlogconf.hiddenBacklogs.includes(backlogconf.requirementBacklog.id)) {
                 let opt = document.createElement("option");
-                let optText = document.createTextNode(board.name);
+                opt.value = backlogconf.requirementBacklog.name;
+                let optText = document.createTextNode(backlogconf.requirementBacklog.name);
                 opt.appendChild(optText);
                 $queryDropdown.appendChild(opt);
-            });
+            }
 
             _that.$select
                 .change(() => {
-
                     _that.widgetConfigurationContext.notify(_that.WidgetHelpers.WidgetEvent.ConfigurationChange,
                         _that.WidgetHelpers.WidgetEvent.Args(_that.getCustomSettings()));
                 });
@@ -82,7 +100,6 @@ export class Configuration {
                 // first load
                 $boardDropdown.val("");
             }
-
             return _that.WidgetHelpers.WidgetStatusHelper.Success();
         });
     }
@@ -93,8 +110,18 @@ export class Configuration {
         tc.projectId = VSS.getWebContext().project.id;
         tc.teamId = VSS.getWebContext().team.id;
         this.client.getBoards(tc).then((boards) => {
-            // console.log(boards);
             deferred.resolve(boards);
+        });
+        return deferred.promise;
+    }
+
+    public GetTeamSettings(): IPromise<WorkContracts.TeamSetting> {
+        let deferred = Q.defer<WorkContracts.TeamSetting>();
+        let tc = <CoreContracts.TeamContext>{};
+        tc.projectId = VSS.getWebContext().project.id;
+        tc.teamId = VSS.getWebContext().team.id;
+        this.client.getTeamSettings(tc).then((teamsettings) => {
+            deferred.resolve(teamsettings);
         });
         return deferred.promise;
     }
@@ -111,7 +138,8 @@ export class Configuration {
     }
 
     public getCustomSettings() {
-        let result = { data: JSON.stringify(<ISettings>{ board: $("#board-dropdown").val() }) };
+        let name = $("#board-dropdown").val();
+        let result = { data: JSON.stringify(<ISettings>{ board: name }) };
         return result;
     }
 
@@ -126,6 +154,5 @@ VSS.require(["TFS/Dashboards/WidgetHelpers"], (WidgetHelpers) => {
         let configuration = new Configuration(WidgetHelpers);
         return configuration;
     });
-
     VSS.notifyLoadSucceeded();
 });

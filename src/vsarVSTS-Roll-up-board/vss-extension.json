@@ -3,17 +3,21 @@
   "id": "",
   "version": "",
   "name": "",
+  "publisher": "",
   "scopes": [
     "vso.work"
   ],
   "description": "The widget shows the number of cards in each column of the Kanban board.",
-  "publisher": "",
   "icons": {
     "default": "static/images/logo.png"
   },
   "targets": [
     {
-      "id": "Microsoft.VisualStudio.Services"
+      "id": "Microsoft.VisualStudio.Services.Cloud"
+    },
+    {
+      "id": "Microsoft.TeamFoundation.Server",
+      "version": "[15.0,)"
     }
   ],
   "tags": [
@@ -117,6 +121,14 @@
           {
             "rowSpan": 3,
             "columnSpan": 4
+          },
+          {
+            "rowSpan": 4,
+            "columnSpan": 4
+          },
+          {
+            "rowSpan": 4,
+            "columnSpan": 3
           }
         ],
         "supportedScopes": [
