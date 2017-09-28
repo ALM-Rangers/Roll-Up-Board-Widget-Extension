@@ -15,7 +15,7 @@ export class RollUpBoardServices {
             let teamproject = VSS.getWebContext().project.name;
             let teamName = VSS.getWebContext().team.name;
             $.ajax({
-                url: collectionUri + teamproject + "/" + teamName + "/_apis/Work/BacklogConfiguration?api-version3.0-preview.1",
+                url: collectionUri + teamproject + "/" + teamName + "/_apis/Work/BacklogConfiguration?api-version=3.0-preview.1",
                 type: "GET",
                 dataType: "json",
                 success: c => {
@@ -59,12 +59,13 @@ export class RollUpBoardServices {
     public static GetBoardColor(boardname: string, backlogconf: any): string {
         let currentportfolio = backlogconf.portfolioBacklogs.filter(f => f.name === boardname);
         if (currentportfolio.length > 0) {
-            return "#" + currentportfolio[0].color;
+            return "#" + currentportfolio[0].color.substr(currentportfolio[0].color.length - 6);
+            // ensure 6 char for the color code
         }
 
         // Backlog Items
         if (backlogconf.requirementBacklog.name === boardname) {
-            return "#" + backlogconf.requirementBacklog.color;
+            return "#" + backlogconf.requirementBacklog.color.substr(backlogconf.requirementBacklog.color.length - 6);
         }
         return "#007acc";
     }
