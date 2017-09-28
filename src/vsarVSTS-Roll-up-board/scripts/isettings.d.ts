@@ -12,4 +12,5 @@
 
 interface ISettings {
     board: string;
+    boardconfig: any;
 }
