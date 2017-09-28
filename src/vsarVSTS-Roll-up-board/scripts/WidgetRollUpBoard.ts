@@ -24,6 +24,8 @@ import Board = require("./RollUpBoard");
 import * as tc from "telemetryclient-team-services-extension";
 import telemetryClientSettings = require("./telemetryClientSettings");
 
+import rollupboardServices = require("./RollUpBoardServices");
+
 export class WidgetRollUpBoard {
 
     constructor(public WidgetHelpers) {
@@ -62,45 +64,79 @@ export class WidgetRollUpBoard {
         let $title = $(".title-header");
         $title.text(widgetSettings.name);
         if (customSettings) {
-            $title.attr("style", "background-color:" + this.GetBoardColor(customSettings.board));
 
-            $("#configwidget").attr("style", "display:none");
-            $("#loadingwidget").attr("style", "display:block");
-            $("#content").attr("style", "display:none");
+            let firstPromise = [rollupboardServices.RollUpBoardServices.GetBacklogConfiguration(), this.GetCurrentTeamFieldValues()];
 
-            this.GetCurrentTeamFieldValues().then(() => { });
-            let promises = [this.GetBoard(customSettings.board)];
+            Q.all(firstPromise).then((value: any[]) => {
 
-            Q.all(promises).then((values: any[]) => {
-                let b: Board.RollUpBoard = values[0];
+                let boardconfig: any = value[0];
+                let boardIsHidden = rollupboardServices.RollUpBoardServices.CurrentBoardIsHidden(customSettings.board, boardconfig);
+                let boardIsAvalaible = rollupboardServices.RollUpBoardServices.CurrentBoardIsAvailable(customSettings.board, boardconfig);
+                if (!boardIsAvalaible) {
+                    $title.attr("style", "color:grey");
+                    $("#content").attr("style", "display:none");
+                    $("#loadingwidget").attr("style", "display:none");
+                    $("#configwidget").attr("style", "display:none");
+                    $("#boardhidden").attr("style", "display:none");
+                    $("#boardnotfound").attr("style", "display:block");
+                } else {
 
-                this.DisplayHtmlRollUpBoard(b);
-                let wilink = VSS.getWebContext().host.uri + VSS.getWebContext().project.name + "/" + VSS.getWebContext().team.name + "/_backlogs/board/" + customSettings.board;
-                $(".widget").off();
-                $(".widget").on("click", function () {
-                    VSS.getService(VSS.ServiceIds.Navigation).then((navigationService: any) => {
-                        navigationService.openNewWindow(wilink);
-                    });
-                });
+                    if (!boardIsHidden) {
 
-                $("#loadingwidget").attr("style", "display:none");
-                $("#content").attr("style", "display:block");
+                        $title.attr("style", "background-color:" + rollupboardServices.RollUpBoardServices.GetBoardColor(customSettings.board, boardconfig));
 
-                if (this.EnableAppInsightTelemetry()) {
-                    tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackEvent("RollUpBoard.LoadRollUp", { BoardName: customSettings.board });
+                        $("#loadingwidget").attr("style", "display:block");
+                        $("#configwidget").attr("style", "display:none");
+                        $("#content").attr("style", "display:none");
+                        $("#boardhidden").attr("style", "display:none");
+                        $("#boardnotfound").attr("style", "display:none");
+
+                        let promises = [this.GetBoard(customSettings.board)];
+
+                        Q.all(promises).then((values: any[]) => {
+                            let b: Board.RollUpBoard = values[0];
+
+                            this.DisplayHtmlRollUpBoard(b);
+                            let wilink = VSS.getWebContext().host.uri + VSS.getWebContext().project.name + "/" + VSS.getWebContext().team.name + "/_backlogs/board/" + customSettings.board;
+                            $(".widget").off();
+                            $(".widget").on("click", function () {
+                                VSS.getService(VSS.ServiceIds.Navigation).then((navigationService: any) => {
+                                    navigationService.openNewWindow(wilink);
+                                });
+                            });
+
+                            $("#loadingwidget").attr("style", "display:none");
+                            $("#boardhidden").attr("style", "display:none");
+                            $("#boardnotfound").attr("style", "display:none");
+                            $("#content").attr("style", "display:block");
+
+                            if (this.EnableAppInsightTelemetry()) {
+                                tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackEvent("RollUpBoard.LoadRollUp", { BoardName: customSettings.board });
+                            }
+
+                        }, function (reject) {
+                            if (this.EnableAppInsightTelemetry()) {
+                                tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.LoadRollUp");
+                            }
+                            console.log(reject);
+                        });
+                    } else {
+                        $title.attr("style", "color:grey");
+                        $("#content").attr("style", "display:none");
+                        $("#loadingwidget").attr("style", "display:none");
+                        $("#configwidget").attr("style", "display:none");
+                        $("#boardhidden").attr("style", "display:block");
+                        $("#boardnotfound").attr("style", "display:none");
+                    }
                 }
-
-            }, function (reject) {
-                if (this.EnableAppInsightTelemetry()) {
-                    tc.TelemetryClient.getClient(telemetryClientSettings.settings).trackException(reject, "RollUpBoard.LoadRollUp");
-                }
-                console.log(reject);
             });
         } else {
             $title.attr("style", "color:grey");
             $("#content").attr("style", "display:none");
             $("#loadingwidget").attr("style", "display:none");
             $("#configwidget").attr("style", "display:block");
+            $("#boardhidden").attr("style", "display:none");
+            $("#boardnotfound").attr("style", "display:none");
         }
         console.log(this.logs);
         return this.WidgetHelpers.WidgetStatusHelper.Success();
@@ -332,7 +368,6 @@ export class WidgetRollUpBoard {
             this.ConstructTableHeaderSplit(board, table);
         }
         // ---------------
-
         let rowindex = 0;
         let isRowSwimlaneHeader: boolean = false;
         // If row swimlans exist
@@ -436,9 +471,7 @@ export class WidgetRollUpBoard {
             });
             $.when.apply($, promiseRow).then(() => {
                 column.rows = rows;
-
                 column.totalWi = this.GetTotalWiByColumn(column);
-
                 this.SetOverMaxLimit(column);
 
                 deferred.resolve(column);
@@ -525,7 +558,6 @@ export class WidgetRollUpBoard {
         // total wi
         this.clientwi.queryByWiql(wiql, this.currentTeamContext.project, this.currentTeamContext.team).then((result) => {
             nbWi.push(result.workItems.length.toString());
-            // console.log("1: " + wiql.query);
 
             this.logs.queries.push(
                 { "column": col.name, "row": row, "query": wiql.query, "wi": result.workItems }
@@ -615,19 +647,6 @@ export class WidgetRollUpBoard {
     }
     private SortLowToHighRow(a: Board.Row, b: Board.Row) {
         return a.order - b.order;
-    }
-
-    private GetBoardColor(boardname: string) {
-        switch (boardname) {
-            case "Backlog items":
-                return "#007acc";
-            case "Features":
-                return "#773B93";
-            case "Epics":
-                return "#FF7B00";
-            default:
-                return "#007acc";
-        }
     }
 
     // Load and Reload Methods
