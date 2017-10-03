@@ -1,7 +1,7 @@
 ﻿THIRD-PARTY SOFTWARE NOTICES AND INFORMATION
 Do Not Translate or Localize
 
-Roll-up Board Widget Extension incorporates third party material from the projects listed below. The original copyright notice and the license under which ALM | DevOps Ranger Contributors received such third party material are set forth below. ALM | DevOps Ranger Contributors reserves all other rights not expressly granted, whether by implication, estoppel or otherwise.
+Roll-up Board Widget Extension incorporates third party material from the projects listed below. The original copyright notice and the license under which ALM | DevOps Ranger Contributors received such third party material are set forth below. ALM | DevOps Ranger Contributors reserve all other rights not expressly granted, whether by implication, estoppel or otherwise.
 
 1. Q
 
