@@ -8,4 +8,4 @@ Changes proposed in this pull request:
 - 
 - 
 
-@ALM-Rangers/rollupboard
+@ALM-Rangers/Roll-Up-Board-Widget-Extension
