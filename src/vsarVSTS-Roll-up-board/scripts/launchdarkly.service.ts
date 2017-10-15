@@ -3,8 +3,8 @@ import Q = require("q");
 export class LaunchDarklyService {
 
     // Private Settings to Tokenize
-    private envId: string = /*"__LD_ENVID__"*/ "590348c958ed570a3af8a496";
-    private static UriHashKey: string = /*"__AF_UriGetHashKey__"*/ "https://vstsext-ff-dev.azurewebsites.net/api/GetHashKey";
+    private envId: string = "__LD_ENVID__" /*"590348c958ed570a3af8a496"*/;
+    private static UriHashKey: string = "__AF_UriGetHashKey__" /*"https://vstsext-ff-dev.azurewebsites.net/api/GetHashKey"*/;
     private static UriUpdateFlagUser: string = "__AF_UriUpdateFlagUser__";
     // ----------------------------
     public ldClient: any;
