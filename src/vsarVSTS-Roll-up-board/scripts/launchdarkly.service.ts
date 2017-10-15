@@ -27,6 +27,7 @@ export class LaunchDarklyService {
                     this.setFlags();
                 });
                 this.user = user;
+                console.log(this.user);
                 deferred.resolve(this.instance);
             });
         }
