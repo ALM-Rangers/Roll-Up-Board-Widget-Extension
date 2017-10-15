@@ -25,11 +25,9 @@ import * as tc from "telemetryclient-team-services-extension";
 import telemetryClientSettings = require("./telemetryClientSettings");
 
 import rollupboardServices = require("./RollUpBoardServices");
+import * as ldservice from "./launchdarkly.service";
 
 export class WidgetRollUpBoard {
-
-    constructor(public WidgetHelpers) {
-    }
 
     public client = RestClient.getClient();
     public clientwi = RestClientWI.getClient();
@@ -39,13 +37,20 @@ export class WidgetRollUpBoard {
     public boardDoneField: string = "";
     public boardRowField: string = "";
     public logs: any = {};
+    public enableTelemetry: true;
+    public displayLogs: false;
+
+    constructor(public WidgetHelpers, public ldclientServices) {
+        this.enableTelemetry = ldclientServices.flags["enable-telemetry"];
+        this.displayLogs = ldclientServices.flags["display-logs"];
+    }
 
     IsVSTS(): boolean {
         return Context.getPageContext().webAccessConfiguration.isHosted;
     }
 
     EnableAppInsightTelemetry(): boolean {
-        const isEnabled = true;
+        const isEnabled = this.enableTelemetry;
         this.logs.appInsights.isEnabled = isEnabled;
         return isEnabled;
     }
@@ -658,11 +663,29 @@ export class WidgetRollUpBoard {
     }
 }
 
-VSS.require("TFS/Dashboards/WidgetHelpers", function (WidgetHelpers) {
-    WidgetHelpers.IncludeWidgetStyles();
-    VSS.register("rollupboardwidget", () => {
-        let rollupboard = new WidgetRollUpBoard(WidgetHelpers);
-        return rollupboard;
+VSS.ready(function () {
+    VSS.require(["TFS/Dashboards/WidgetHelpers"], function (WidgetHelpers) {
+        WidgetHelpers.IncludeWidgetStyles();
+        VSS.getAppToken().then((Apptoken) => {
+            let webContext = VSS.getWebContext();
+            let user = {
+                "key": webContext.user.id + ":" + webContext.account.name,
+                "email": webContext.user.email,
+                "name": webContext.user.name + "-" + webContext.account.name,
+                "custom": {
+                    "account": webContext.account.name
+                }
+            };
+            ldservice.LaunchDarklyService.init(user, Apptoken.token, webContext.user.id).then((p) => {
+                p.ldClient.on("ready", function () {
+                    VSS.register("rollupboardwidget", () => {
+                        ldservice.LaunchDarklyService.setFlags();
+                        let rollupboard = new WidgetRollUpBoard(WidgetHelpers, ldservice.LaunchDarklyService);
+                        return rollupboard;
+                    });
+                    VSS.notifyLoadSucceeded();
+                });
+            });
+        });
     });
-    VSS.notifyLoadSucceeded();
 });

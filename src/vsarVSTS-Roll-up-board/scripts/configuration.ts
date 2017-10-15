@@ -23,6 +23,7 @@ import * as telemclient from "telemetryclient-team-services-extension";
 import telemetryClientSettings = require("./telemetryClientSettings");
 
 import rollupboardServices = require("./RollUpBoardServices");
+import * as ldservice from "./launchdarkly.service";
 
 export class Configuration {
     widgetConfigurationContext = null;
@@ -147,12 +148,28 @@ export class Configuration {
         return this.WidgetHelpers.WidgetConfigurationSave.Valid(this.getCustomSettings());
     }
 }
-
-VSS.require(["TFS/Dashboards/WidgetHelpers"], (WidgetHelpers) => {
-    WidgetHelpers.IncludeWidgetConfigurationStyles();
-    VSS.register("rollupboardwidget-Configuration", () => {
-        let configuration = new Configuration(WidgetHelpers);
-        return configuration;
+VSS.ready(function () {
+    VSS.require(["TFS/Dashboards/WidgetHelpers"], (WidgetHelpers) => {
+        WidgetHelpers.IncludeWidgetConfigurationStyles();
+        VSS.getAppToken().then((Apptoken) => {
+            let webContext = VSS.getWebContext();
+            let user = {
+                "key": webContext.user.id + ":" + webContext.account.name,
+                "email": webContext.user.email,
+                "name": webContext.user.name + "-" + webContext.account.name,
+                "custom": {
+                    "account": webContext.account.name
+                }
+            };
+            ldservice.LaunchDarklyService.init(user, Apptoken.token, webContext.user.id).then((p) => {
+                p.ldClient.on("ready", function () {
+                    VSS.register("rollupboardwidget-Configuration", () => {
+                        let configuration = new Configuration(WidgetHelpers);
+                        return configuration;
+                    });
+                    VSS.notifyLoadSucceeded();
+                });
+            });
+        });
     });
-    VSS.notifyLoadSucceeded();
 });
