@@ -52,9 +52,18 @@ export class WidgetRollUpBoard {
     }
 
     EnableAppInsightTelemetry(): boolean {
-        const isEnabled = this.enableTelemetry;
+        let isEnabled = this.enableTelemetry;
         this.logs.appInsights.isEnabled = isEnabled;
+        if (!isEnabled) {
+            console.log("App Insight Telemetry is disabled");
+        }
         return isEnabled;
+    }
+
+    DisplayLogs(message: any) {
+        if (this.displayLogs) {
+            console.log(message);
+        }
     }
 
     public LoadRollUp(widgetSettings) {
@@ -145,7 +154,7 @@ export class WidgetRollUpBoard {
             $("#boardhidden").attr("style", "display:none");
             $("#boardnotfound").attr("style", "display:none");
         }
-        console.log(this.logs);
+        this.DisplayLogs(this.logs);
         return this.WidgetHelpers.WidgetStatusHelper.Success();
     }
 

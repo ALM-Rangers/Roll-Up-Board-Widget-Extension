@@ -33,7 +33,14 @@ export class Configuration {
     public _widgetHelpers;
     public teamSettingsVisibility: any = {};
     public BacklogConfiguration: { id: string, name: string, color: string, visible: boolean }[] = [];
-    constructor(public WidgetHelpers) {
+    public enableTelemetry: true;
+    public displayLogs: false;
+
+    constructor(public WidgetHelpers, public ldclientServices) {
+        if (ldclientServices) {
+            this.enableTelemetry = ldclientServices.flags["enable-telemetry"];
+            this.displayLogs = ldclientServices.flags["display-logs"];
+        }
     }
 
     IsVSTS(): boolean {
@@ -41,14 +48,16 @@ export class Configuration {
     }
 
     EnableAppInsightTelemetry(): boolean {
-        return true;
+        let isEnabled = this.enableTelemetry;
+        if (!isEnabled) {
+            console.log("App Insight Telemetry is disabled");
+        }
+        return isEnabled;
     }
 
     public load(widgetSettings, widgetConfigurationContext) {
         if (this.EnableAppInsightTelemetry()) {
             telemclient.TelemetryClient.getClient(telemetryClientSettings.settings).trackPageView("RollUpBoard.Configuration");
-        } else {
-            console.log("App Insight Telemetry is disabled");
         }
 
         let _that = this;
@@ -161,15 +170,24 @@ VSS.ready(function () {
                     "account": webContext.account.name
                 }
             };
-            ldservice.LaunchDarklyService.init(user, Apptoken.token, webContext.user.id).then((p) => {
-                p.ldClient.on("ready", function () {
-                    VSS.register("rollupboardwidget-Configuration", () => {
-                        let configuration = new Configuration(WidgetHelpers);
-                        return configuration;
+            if (Context.getPageContext().webAccessConfiguration.isHosted) { // FF Only for VSTS
+                ldservice.LaunchDarklyService.init(user, Apptoken.token, webContext.user.id).then((p) => {
+                    p.ldClient.on("ready", function () {
+                        VSS.register("rollupboardwidget-Configuration", () => {
+                            ldservice.LaunchDarklyService.setFlags();
+                            let configuration = new Configuration(WidgetHelpers, ldservice.LaunchDarklyService);
+                            return configuration;
+                        });
+                        VSS.notifyLoadSucceeded();
                     });
-                    VSS.notifyLoadSucceeded();
                 });
-            });
+            } else {
+                VSS.register("rollupboardwidget-Configuration", () => {
+                    let configuration = new Configuration(WidgetHelpers, null);
+                    return configuration;
+                });
+                VSS.notifyLoadSucceeded();
+            }
         });
     });
 });
