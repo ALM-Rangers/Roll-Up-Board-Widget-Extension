@@ -55,6 +55,12 @@ export class Configuration {
         return isEnabled;
     }
 
+    DisplayLogs(message: any) {
+        if (this.displayLogs) {
+            console.log(message);
+        }
+    }
+
     public load(widgetSettings, widgetConfigurationContext) {
         if (this.EnableAppInsightTelemetry()) {
             telemclient.TelemetryClient.getClient(telemetryClientSettings.settings).trackPageView("RollUpBoard.Configuration");
@@ -182,6 +188,7 @@ VSS.ready(function () {
                     });
                 });
             } else {
+                console.log("Context : TFS On-Premise");
                 VSS.register("rollupboardwidget-Configuration", () => {
                     let configuration = new Configuration(WidgetHelpers, null);
                     return configuration;
