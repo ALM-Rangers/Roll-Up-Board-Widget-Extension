@@ -690,7 +690,7 @@ VSS.ready(function () {
                     });
                 });
             } else { // For TFS OnPremise
-                console.log("Context : TFS onpremise")
+                console.log("Context : TFS onpremise");
                 VSS.register("rollupboardwidget", () => {
                     let rollupboard = new WidgetRollUpBoard(WidgetHelpers, null);
                     return rollupboard;
