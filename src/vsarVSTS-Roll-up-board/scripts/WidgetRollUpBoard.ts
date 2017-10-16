@@ -37,15 +37,15 @@ export class WidgetRollUpBoard {
     public boardDoneField: string = "";
     public boardRowField: string = "";
     public logs: any = {};
-    public enableTelemetry: true;
-    public displayLogs: false;
+    public enableTelemetry: boolean = true;
+    public displayLogs: boolean = false;
 
     constructor(public WidgetHelpers, public ldclientServices) {
         if (ldclientServices) {
             this.enableTelemetry = ldclientServices.flags["enable-telemetry"];
             this.displayLogs = ldclientServices.flags["display-logs"];
         } else {
-            this.enableTelemetry = true;
+            this.displayLogs = true;
         }
     }
 
