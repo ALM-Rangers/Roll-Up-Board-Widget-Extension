@@ -41,8 +41,10 @@ export class WidgetRollUpBoard {
     public displayLogs: false;
 
     constructor(public WidgetHelpers, public ldclientServices) {
-        this.enableTelemetry = ldclientServices.flags["enable-telemetry"];
-        this.displayLogs = ldclientServices.flags["display-logs"];
+        if (ldclientServices) {
+            this.enableTelemetry = ldclientServices.flags["enable-telemetry"];
+            this.displayLogs = ldclientServices.flags["display-logs"];
+        }
     }
 
     IsVSTS(): boolean {
@@ -676,16 +678,25 @@ VSS.ready(function () {
                     "account": webContext.account.name
                 }
             };
-            ldservice.LaunchDarklyService.init(user, Apptoken.token, webContext.user.id).then((p) => {
-                p.ldClient.on("ready", function () {
-                    VSS.register("rollupboardwidget", () => {
-                        ldservice.LaunchDarklyService.setFlags();
-                        let rollupboard = new WidgetRollUpBoard(WidgetHelpers, ldservice.LaunchDarklyService);
-                        return rollupboard;
+            if (Context.getPageContext().webAccessConfiguration.isHosted) { // FF Only for VSTS
+                ldservice.LaunchDarklyService.init(user, Apptoken.token, webContext.user.id).then((p) => {
+                    p.ldClient.on("ready", function () {
+                        VSS.register("rollupboardwidget", () => {
+                            ldservice.LaunchDarklyService.setFlags();
+                            let rollupboard = new WidgetRollUpBoard(WidgetHelpers, ldservice.LaunchDarklyService);
+                            return rollupboard;
+                        });
+                        VSS.notifyLoadSucceeded();
                     });
-                    VSS.notifyLoadSucceeded();
                 });
-            });
+            } else { // For TFS OnPremise
+                console.log("Context : TFS onpremise")
+                VSS.register("rollupboardwidget", () => {
+                    let rollupboard = new WidgetRollUpBoard(WidgetHelpers, null);
+                    return rollupboard;
+                });
+                VSS.notifyLoadSucceeded();
+            }
         });
     });
 });
