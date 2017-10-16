@@ -44,6 +44,8 @@ export class WidgetRollUpBoard {
         if (ldclientServices) {
             this.enableTelemetry = ldclientServices.flags["enable-telemetry"];
             this.displayLogs = ldclientServices.flags["display-logs"];
+        } else {
+            this.enableTelemetry = true;
         }
     }
 
