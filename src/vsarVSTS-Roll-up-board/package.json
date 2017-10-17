@@ -26,7 +26,8 @@
     "@microsoft/gulp-core-build-typescript": "^2.4.4",
     "vss-web-extension-sdk": "^2.115.0",
     "applicationinsights-js": "*",
-    "telemetryclient-team-services-extension": "*"
+    "telemetryclient-team-services-extension": "*",
+    "ldclient-js": "^1.1.12"
   },
   "name": "rollup",
   "private": true,

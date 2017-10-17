@@ -23,6 +23,7 @@ import * as telemclient from "telemetryclient-team-services-extension";
 import telemetryClientSettings = require("./telemetryClientSettings");
 
 import rollupboardServices = require("./RollUpBoardServices");
+import * as ldservice from "./launchdarkly.service";
 
 export class Configuration {
     widgetConfigurationContext = null;
@@ -32,7 +33,16 @@ export class Configuration {
     public _widgetHelpers;
     public teamSettingsVisibility: any = {};
     public BacklogConfiguration: { id: string, name: string, color: string, visible: boolean }[] = [];
-    constructor(public WidgetHelpers) {
+    public enableTelemetry: boolean = true;
+    public displayLogs: boolean = false;
+
+    constructor(public WidgetHelpers, public ldclientServices) {
+        if (ldclientServices) {
+            this.enableTelemetry = ldclientServices.flags["enable-telemetry"];
+            this.displayLogs = ldclientServices.flags["display-logs"];
+        } else {
+            this.displayLogs = true;
+        }
     }
 
     IsVSTS(): boolean {
@@ -40,14 +50,22 @@ export class Configuration {
     }
 
     EnableAppInsightTelemetry(): boolean {
-        return true;
+        let isEnabled = this.enableTelemetry;
+        if (!isEnabled) {
+            console.log("App Insight Telemetry is disabled");
+        }
+        return isEnabled;
+    }
+
+    DisplayLogs(message: any) {
+        if (this.displayLogs) {
+            console.log(message);
+        }
     }
 
     public load(widgetSettings, widgetConfigurationContext) {
         if (this.EnableAppInsightTelemetry()) {
             telemclient.TelemetryClient.getClient(telemetryClientSettings.settings).trackPageView("RollUpBoard.Configuration");
-        } else {
-            console.log("App Insight Telemetry is disabled");
         }
 
         let _that = this;
@@ -147,12 +165,38 @@ export class Configuration {
         return this.WidgetHelpers.WidgetConfigurationSave.Valid(this.getCustomSettings());
     }
 }
-
-VSS.require(["TFS/Dashboards/WidgetHelpers"], (WidgetHelpers) => {
-    WidgetHelpers.IncludeWidgetConfigurationStyles();
-    VSS.register("rollupboardwidget-Configuration", () => {
-        let configuration = new Configuration(WidgetHelpers);
-        return configuration;
+VSS.ready(function () {
+    VSS.require(["TFS/Dashboards/WidgetHelpers"], (WidgetHelpers) => {
+        WidgetHelpers.IncludeWidgetConfigurationStyles();
+        VSS.getAppToken().then((Apptoken) => {
+            let webContext = VSS.getWebContext();
+            let user = {
+                "key": webContext.user.id + ":" + webContext.account.name,
+                "email": webContext.user.email,
+                "name": webContext.user.name + "-" + webContext.account.name,
+                "custom": {
+                    "account": webContext.account.name
+                }
+            };
+            if (Context.getPageContext().webAccessConfiguration.isHosted) { // FF Only for VSTS
+                ldservice.LaunchDarklyService.init(user, Apptoken.token, webContext.user.id).then((p) => {
+                    p.ldClient.on("ready", function () {
+                        VSS.register("rollupboardwidget-Configuration", () => {
+                            ldservice.LaunchDarklyService.setFlags();
+                            let configuration = new Configuration(WidgetHelpers, ldservice.LaunchDarklyService);
+                            return configuration;
+                        });
+                        VSS.notifyLoadSucceeded();
+                    });
+                });
+            } else {
+                console.log("Context : TFS On-Premise");
+                VSS.register("rollupboardwidget-Configuration", () => {
+                    let configuration = new Configuration(WidgetHelpers, null);
+                    return configuration;
+                });
+                VSS.notifyLoadSucceeded();
+            }
+        });
     });
-    VSS.notifyLoadSucceeded();
 });
