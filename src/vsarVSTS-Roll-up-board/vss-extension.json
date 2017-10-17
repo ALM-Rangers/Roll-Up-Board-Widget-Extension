@@ -1,9 +1,9 @@
 {
   "manifestVersion": 1,
-  "id": "RollUpBoardWidgetTest",
+  "id": "",
   "version": "",
-  "name": "RollUp Board Test",
-  "publisher": "DevMikaelKrief",
+  "name": "",
+  "publisher": "",
   "scopes": [
     "vso.work"
   ],
