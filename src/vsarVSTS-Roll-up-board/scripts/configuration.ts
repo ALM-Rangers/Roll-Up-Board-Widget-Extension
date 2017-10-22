@@ -29,6 +29,7 @@ export class Configuration {
     widgetConfigurationContext = null;
 
     $select = $("#board-dropdown");
+    $displaylogs = $("#display-logs");
     public client = RestClient.getClient();
     public _widgetHelpers;
     public teamSettingsVisibility: any = {};
@@ -118,6 +119,20 @@ export class Configuration {
                 // first load
                 $boardDropdown.val("");
             }
+
+            _that.$displaylogs.prop("checked", this.ldclientServices.flags["display-logs"]);
+            _that.$displaylogs.change(() => {
+                let displaylogs = _that.$displaylogs.is(":checked");
+                VSS.getAppToken().then((Apptoken) => {
+                    this.SetEnableFF(Apptoken.token, displaylogs, "display-logs").then((e) => {
+                        if (e === "The flag is updated") {
+                            ldservice.LaunchDarklyService.updateFlag("display-logs", displaylogs);
+                            ldservice.LaunchDarklyService.trackEvent("display-logs");
+                        }
+                    });
+                });
+            });
+
             return _that.WidgetHelpers.WidgetStatusHelper.Success();
         });
     }
@@ -152,6 +167,15 @@ export class Configuration {
             deferred.resolve(processT["templateName"]);
         });
 
+        return deferred.promise;
+    }
+
+    private SetEnableFF(token: string, enabled: boolean, feature: string): Promise<string> {
+        let deferred = Q.defer<string>();
+        ldservice.LaunchDarklyService.updateUserFeature(token, this.ldclientServices.user, enabled, feature).then((r) => {
+            console.log(r);
+            deferred.resolve(r);
+        });
         return deferred.promise;
     }
 

@@ -6,6 +6,9 @@ export class LaunchDarklyService {
     private envId: string = "__LD_ENVID__";
     private static UriHashKey: string = "__AF_UriGetHashKey__";
     private static UriUpdateFlagUser: string = "__AF_UriUpdateFlagUser__";
+    private static LDProject = " __LD_PROJECT__";
+    private static LDEnv = " __LD_ENV__";
+
     // ----------------------------
     public ldClient: any;
     private static instance: LaunchDarklyService;
@@ -63,7 +66,7 @@ export class LaunchDarklyService {
         return deferred.promise;
     }
 
-    public static updateUserFeature(appToken: string, user, enable, feature, ldproject, ldenv): Promise<string> {
+    public static updateUserFeature(appToken: string, user, enable, feature): Promise<string> {
         let deferred = Q.defer<string>();
         if (user) {
             $.ajax({
@@ -72,7 +75,7 @@ export class LaunchDarklyService {
                 type: "POST",
                 dataType: "json",
                 headers: { "Access-Control-Allow-Origin": "*" },
-                data: { token: "" + appToken + "", active: "" + enable + "", feature: "" + feature + "", ldproject: "" + ldproject + "", ldenv: "" + ldenv + "", account: "" + user.custom.account + "" },
+                data: { token: "" + appToken + "", active: "" + enable + "", feature: "" + feature + "", ldproject: "" + this.LDProject + "", ldenv: "" + this.LDEnv + "", account: "" + user.custom.account + "" },
                 success: c => {
                     deferred.resolve(c);
                 }
