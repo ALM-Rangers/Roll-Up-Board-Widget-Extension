@@ -18,14 +18,9 @@ export class LaunchDarklyService {
         if (!this.instance) {
             this.instance = new LaunchDarklyService();
             this.hashUserKey(user, true, appToken, userid).then((h) => {
-                try {
-                    this.instance.ldClient = LDClient.initialize(this.instance.envId, user, {
-                        hash: h
-                    });
-                } catch (e) {
-
-                }
-
+                this.instance.ldClient = LDClient.initialize(this.instance.envId, user, {
+                    hash: h
+                });
                 this.instance.ldClient.on("change", (flags) => {
                     this.setFlags();
                 });
