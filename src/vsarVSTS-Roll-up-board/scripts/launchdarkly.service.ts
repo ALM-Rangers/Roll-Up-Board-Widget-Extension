@@ -21,6 +21,7 @@ export class LaunchDarklyService {
                 this.instance.ldClient = LDClient.initialize(this.instance.envId, user, {
                     hash: h
                 });
+                console.log(this.instance.ldClient);
                 this.instance.ldClient.on("change", (flags) => {
                     this.setFlags();
                 });
