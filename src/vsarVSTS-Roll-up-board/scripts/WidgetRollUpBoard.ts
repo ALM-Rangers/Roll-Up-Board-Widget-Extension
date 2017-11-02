@@ -683,8 +683,7 @@ VSS.ready(function () {
             let webContext = VSS.getWebContext();
             let user = {
                 "key": webContext.user.id + ":" + webContext.account.name,
-                "email": webContext.user.email,
-                "name": webContext.user.name + "-" + webContext.account.name,
+                "name": webContext.user.uniqueName + "-" + webContext.account.name,
                 "custom": {
                     "account": webContext.account.name
                 }

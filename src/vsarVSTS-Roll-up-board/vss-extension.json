@@ -82,6 +82,11 @@
       "path": "node_modules/ldclient-js/dist",
       "addressable": true,
       "packagePath": "lib"
+    },
+    {
+      "path": "node_modules/event-source-polyfill/src",
+      "addressable": true,
+      "packagePath": "lib"
     }
   ],
   "categories": [
