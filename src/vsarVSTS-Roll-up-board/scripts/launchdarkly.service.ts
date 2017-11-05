@@ -1,5 +1,16 @@
+// ---------------------------------------------------------------------
+// <copyright file="launchdarkly.servoices.ts">
+//    This code is licensed under the MIT License.
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+//    PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// </copyright>
+// <summary>
+// </summary>
+// ---------------------------------------------------------------------
+
 import * as LDClient from "ldclient-js";
-import Q = require("q");
 export class LaunchDarklyService {
 
     // Private Settings to Tokenize
@@ -14,15 +25,15 @@ export class LaunchDarklyService {
 
     constructor() { }
 
-    public static init(user: any, appToken: string, userid: string): Promise<LaunchDarklyService> {
-        let deferred = Q.defer<LaunchDarklyService>();
+    public static init(user: any, appToken: string, userid: string): IPromise<LaunchDarklyService> {
+        let deferred = $.Deferred<LaunchDarklyService>();
         if (!this.instance) {
             this.instance = new LaunchDarklyService();
             this.hashUserKey(user, true, appToken, userid).then((h) => {
                 this.instance.ldClient = LDClient.initialize(this.instance.envId, user, {
                     hash: h
                 });
-
+                console.log(this.instance.ldClient);
                 this.instance.ldClient.on("change", (flags) => {
                     this.setFlags();
                 });
@@ -31,7 +42,7 @@ export class LaunchDarklyService {
                 deferred.resolve(this.instance);
             });
         }
-        return deferred.promise;
+        return deferred.promise();
     }
 
     public static setFlags() {
@@ -45,8 +56,8 @@ export class LaunchDarklyService {
     public static trackEvent(event: string) {
         this.instance.ldClient.track(event);
     }
-    private static hashUserKey(user, hash: boolean, appToken: string, userid: string): Promise<string> {
-        let deferred = Q.defer<string>();
+    private static hashUserKey(user, hash: boolean, appToken: string, userid: string): IPromise<string> {
+        let deferred = $.Deferred<string>();
         if (hash) {
             $.ajax({
                 url: this.UriHashKey,
@@ -60,11 +71,11 @@ export class LaunchDarklyService {
         } else {
             deferred.resolve(user.key);
         }
-        return deferred.promise;
+        return deferred.promise();
     }
 
-    public static updateUserFeature(appToken: string, user, enable, feature, ldproject, ldenv): Promise<string> {
-        let deferred = Q.defer<string>();
+    public static updateUserFeature(appToken: string, user, enable, feature, ldproject, ldenv): IPromise<string> {
+        let deferred = $.Deferred<string>();
         if (user) {
             $.ajax({
                 url: this.UriUpdateFlagUser,
@@ -80,6 +91,6 @@ export class LaunchDarklyService {
         } else {
             deferred.resolve(user.key);
         }
-        return deferred.promise;
+        return deferred.promise();
     }
 }
