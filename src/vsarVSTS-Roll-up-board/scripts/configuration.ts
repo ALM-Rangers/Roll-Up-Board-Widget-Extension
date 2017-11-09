@@ -182,20 +182,28 @@ VSS.ready(function () {
                     p.ldClient.on("ready", function () {
                         VSS.register("rollupboardwidget-Configuration", () => {
                             ldservice.LaunchDarklyService.setFlags();
+                            console.log("feature flags are enabled");
                             let configuration = new Configuration(WidgetHelpers, ldservice.LaunchDarklyService);
                             return configuration;
                         });
                         VSS.notifyLoadSucceeded();
                     });
+                }, function (reject) {
+                    console.warn("feature flags are not used");
+                    RegisterWidgetConfigurationWithoutFF(WidgetHelpers);
                 });
             } else {
                 console.log("Context : TFS On-Premise");
-                VSS.register("rollupboardwidget-Configuration", () => {
-                    let configuration = new Configuration(WidgetHelpers, null);
-                    return configuration;
-                });
-                VSS.notifyLoadSucceeded();
+                RegisterWidgetConfigurationWithoutFF(WidgetHelpers);
             }
         });
     });
 });
+
+function RegisterWidgetConfigurationWithoutFF(WidgetHelpers: any) {
+    VSS.register("rollupboardwidget-Configuration", () => {
+        let configuration = new Configuration(WidgetHelpers, null);
+        return configuration;
+    });
+    VSS.notifyLoadSucceeded();
+}
