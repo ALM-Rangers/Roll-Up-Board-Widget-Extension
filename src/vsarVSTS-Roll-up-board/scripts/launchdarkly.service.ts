@@ -14,8 +14,8 @@ import * as LDClient from "ldclient-js";
 export class LaunchDarklyService {
 
     // Private Settings to Tokenize
-    private envId: string = "590348c958ed570a3af8a496" /*"__LD_ENVID__"*/;
-    private static UriHashKey: string = "https://vstsext-ff-dev.azurewebsites.net/api/GetHashKey"/*"__AF_UriGetHashKey__"*/;
+    private envId: string = "__LD_ENVID__";
+    private static UriHashKey: string = "__AF_UriGetHashKey__";
     private static UriUpdateFlagUser: string = "__AF_UriUpdateFlagUser__";
     // ----------------------------
     public ldClient: any;
@@ -67,7 +67,7 @@ export class LaunchDarklyService {
                 url: this.UriHashKey,
                 type: "POST",
                 headers: { "Access-Control-Allow-Origin": "*" },
-                data: { account: "" + user.custom.account + "", token: "" + appToken + "" }, // REMOVE THE 1
+                data: { account: "" + user.custom.account + "", token: "" + appToken + "" },
                 success: c => {
                     deferred.resolve(c);
                 },
