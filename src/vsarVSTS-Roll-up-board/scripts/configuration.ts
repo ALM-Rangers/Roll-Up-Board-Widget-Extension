@@ -196,8 +196,7 @@ VSS.ready(function () {
             let webContext = VSS.getWebContext();
             let user = {
                 "key": webContext.user.id + ":" + webContext.account.name,
-                "email": webContext.user.email,
-                "name": webContext.user.name + "-" + webContext.account.name,
+                "name": webContext.user.name,
                 "custom": {
                     "account": webContext.account.name
                 }
@@ -207,20 +206,28 @@ VSS.ready(function () {
                     p.ldClient.on("ready", function () {
                         VSS.register("rollupboardwidget-Configuration", () => {
                             ldservice.LaunchDarklyService.setFlags();
+                            console.log("feature flags are enabled");
                             let configuration = new Configuration(WidgetHelpers, ldservice.LaunchDarklyService);
                             return configuration;
                         });
                         VSS.notifyLoadSucceeded();
                     });
+                }, function (reject) {
+                    console.warn("feature flags are not used");
+                    RegisterWidgetConfigurationWithoutFF(WidgetHelpers);
                 });
             } else {
                 console.log("Context : TFS On-Premise");
-                VSS.register("rollupboardwidget-Configuration", () => {
-                    let configuration = new Configuration(WidgetHelpers, null);
-                    return configuration;
-                });
-                VSS.notifyLoadSucceeded();
+                RegisterWidgetConfigurationWithoutFF(WidgetHelpers);
             }
         });
     });
 });
+
+function RegisterWidgetConfigurationWithoutFF(WidgetHelpers: any) {
+    VSS.register("rollupboardwidget-Configuration", () => {
+        let configuration = new Configuration(WidgetHelpers, null);
+        return configuration;
+    });
+    VSS.notifyLoadSucceeded();
+}

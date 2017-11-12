@@ -683,8 +683,7 @@ VSS.ready(function () {
             let webContext = VSS.getWebContext();
             let user = {
                 "key": webContext.user.id + ":" + webContext.account.name,
-                "email": webContext.user.email,
-                "name": webContext.user.name + "-" + webContext.account.name,
+                "name": webContext.user.name,
                 "custom": {
                     "account": webContext.account.name
                 }
@@ -694,21 +693,29 @@ VSS.ready(function () {
                     p.ldClient.on("ready", function () {
                         VSS.register("rollupboardwidget", () => {
                             ldservice.LaunchDarklyService.setFlags();
+                            console.log("feature flags are enabled");
                             let rollupboard = new WidgetRollUpBoard(WidgetHelpers, ldservice.LaunchDarklyService);
                             return rollupboard;
                         });
                         VSS.notifyLoadSucceeded();
                     });
-                });
+                }, function (reject) {
+                    console.warn("feature flags are not used");
+                    RegisterWidgetWithoutFF(WidgetHelpers);
+                }
+                );
             } else { // For TFS OnPremise
-                console.log("Context : TFS On-Premise");
+                console.info("Context : TFS On-Premise");
                 // console.log(webContext); for v2
-                VSS.register("rollupboardwidget", () => {
-                    let rollupboard = new WidgetRollUpBoard(WidgetHelpers, null);
-                    return rollupboard;
-                });
-                VSS.notifyLoadSucceeded();
+                RegisterWidgetWithoutFF(WidgetHelpers);
             }
         });
     });
 });
+function RegisterWidgetWithoutFF(WidgetHelpers: any) {
+    VSS.register("rollupboardwidget", () => {
+        let rollupboard = new WidgetRollUpBoard(WidgetHelpers, null);
+        return rollupboard;
+    });
+    VSS.notifyLoadSucceeded();
+}
