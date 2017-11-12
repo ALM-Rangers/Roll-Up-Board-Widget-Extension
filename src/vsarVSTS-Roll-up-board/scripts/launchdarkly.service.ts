@@ -40,6 +40,10 @@ export class LaunchDarklyService {
                 this.user = user;
                 // console.log(this.user);
                 deferred.resolve(this.instance);
+            }, function (reject) { // e.g Error 500 for ""
+                // console.log(reject);
+                console.warn("RollUpBoard.LaunchDarlyServices.Init.AzureFunction.GethashKey: " + reject.status + " - " + reject.responseJSON);
+                deferred.reject();
             });
         }
         return deferred.promise();
@@ -66,6 +70,9 @@ export class LaunchDarklyService {
                 data: { account: "" + user.custom.account + "", token: "" + appToken + "" },
                 success: c => {
                     deferred.resolve(c);
+                },
+                error: err => {
+                    deferred.reject(err);
                 }
             });
         } else {
