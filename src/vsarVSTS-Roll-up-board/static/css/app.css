@@ -100,8 +100,8 @@ tr {
 .switch {
     position: relative;
     display: inline-block;
-    width: 42px;
-    height: 18px;
+    width: 44px;
+    height: 20px;
   }
   
   /* Hide default HTML checkbox */
@@ -133,11 +133,11 @@ tr {
   }
   
   input:checked + .slider {
-    background-color: #2196F3;
+    background-color: #2b88d8;
   }
   
   input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
+    box-shadow: 0 0 1px #2b88d8;
   }
   
   input:checked + .slider:before {

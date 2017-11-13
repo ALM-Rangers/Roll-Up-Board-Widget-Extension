@@ -123,6 +123,7 @@ export class Configuration {
             _that.$displaylogs.prop("checked", this.ldclientServices.flags["display-logs"]);
             _that.$displaylogs.change(() => {
                 let displaylogs = _that.$displaylogs.is(":checked");
+
                 VSS.getAppToken().then((Apptoken) => {
                     this.SetEnableFF(Apptoken.token, displaylogs, "display-logs").then((e) => {
                         if (e === "The flag is updated") {
@@ -170,7 +171,7 @@ export class Configuration {
         return deferred.promise;
     }
 
-    private SetEnableFF(token: string, enabled: boolean, feature: string): Promise<string> {
+    private SetEnableFF(token: string, enabled: boolean, feature: string): IPromise<string> {
         let deferred = Q.defer<string>();
         ldservice.LaunchDarklyService.updateUserFeature(token, this.ldclientServices.user, enabled, feature).then((r) => {
             console.log(r);
