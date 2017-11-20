@@ -20,10 +20,10 @@ export class LaunchDarklyService {
     private static LdProject = "__LD_Project";
     private static LdEnv = "__LD_Env__";*/
 
-    private envId: string = "590348c958ed570a3af8a497";
+    private envId: string = "590348c958ed570a3af8a496";
     private static UriHashKey: string = "https://vstsext-ff-dev.azurewebsites.net/api/GetHashKey";
-    private static UriUpdateFlagUser: string = "https://vstsext-ff-dev.azurewebsites.net/api/UpdateUserFlag";
-    private static LdProject = "Default";
+    private static UriUpdateFlagUser: string = "https://vstsext-ff-dev.azurewebsites.net/api/UpdateUserFeatureFlag";
+    private static LdProject = "default";
     private static LdEnv = "test";
 
     // ----------------------------
@@ -105,6 +105,9 @@ export class LaunchDarklyService {
                 data: { token: "" + appToken + "", active: "" + enable + "", feature: "" + feature + "", ldproject: "" + ldproject + "", ldenv: "" + ldenv + "", account: "" + user.custom.account + "" },
                 success: c => {
                     deferred.resolve(c);
+                },
+                error: err => {
+                    deferred.reject(err);
                 }
             });
         } else {

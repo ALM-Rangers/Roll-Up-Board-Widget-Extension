@@ -36,13 +36,17 @@ export class Configuration {
     public BacklogConfiguration: { id: string, name: string, color: string, visible: boolean }[] = [];
     public enableTelemetry: boolean = true;
     public displayLogs: boolean = false;
+    public activateFF: boolean = true;
 
     constructor(public WidgetHelpers, public ldclientServices) {
         if (ldclientServices) {
             this.enableTelemetry = ldclientServices.flags["enable-telemetry"];
             this.displayLogs = ldclientServices.flags["display-logs"];
+            // console.log(this.displayLogs);
+            this.activateFF = true;
         } else {
-            this.displayLogs = true;
+            this.displayLogs = false;
+            this.activateFF = false;
         }
     }
 
@@ -120,19 +124,27 @@ export class Configuration {
                 $boardDropdown.val("");
             }
 
-            _that.$displaylogs.prop("checked", this.ldclientServices.flags["display-logs"]);
-            _that.$displaylogs.change(() => {
-                let displaylogs = _that.$displaylogs.is(":checked");
+            if (this.activateFF) {
+                $("#switch-displaylog").show();
+                _that.$displaylogs.prop("checked", _that.displayLogs);
+                // console.log(_that.displayLogs);
+                this.DisplayLogsStatus();
+                _that.$displaylogs.change(() => {
+                    let displaylogs = _that.$displaylogs.is(":checked");
+                    this.DisplayLogsStatus();
 
-                VSS.getAppToken().then((Apptoken) => {
-                    this.SetEnableFF(Apptoken.token, displaylogs, "display-logs").then((e) => {
-                        if (e === "The flag is updated") {
-                            ldservice.LaunchDarklyService.updateFlag("display-logs", displaylogs);
-                            ldservice.LaunchDarklyService.trackEvent("display-logs");
-                        }
+                    VSS.getAppToken().then((Apptoken) => {
+                        this.SetEnableFF(Apptoken.token, displaylogs, "display-logs").then((e) => {
+                            if (e === "The flag is updated") {
+                                ldservice.LaunchDarklyService.updateFlag("display-logs", displaylogs);
+                                ldservice.LaunchDarklyService.trackEvent("display-logs");
+                            }
+                        });
                     });
                 });
-            });
+            } else {
+                $("#switch-displaylog").hide();
+            }
 
             return _that.WidgetHelpers.WidgetStatusHelper.Success();
         });
@@ -169,6 +181,16 @@ export class Configuration {
         });
 
         return deferred.promise;
+    }
+
+    public DisplayLogsStatus() {
+        let displaylogs = $("#display-logs").is(":checked");
+        let displaylogsstatus = $("#displaylogs-status");
+        if (displaylogs) {
+            displaylogsstatus.text("On");
+        } else {
+            displaylogsstatus.text("Off");
+        }
     }
 
     private SetEnableFF(token: string, enabled: boolean, feature: string): IPromise<string> {
