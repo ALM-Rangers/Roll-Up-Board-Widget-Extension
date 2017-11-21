@@ -14,19 +14,13 @@ import * as LDClient from "ldclient-js";
 export class LaunchDarklyService {
 
     // Private Settings to Tokenize
-    /* private envId: string = "__LD_ENVID__";
+    private envId: string = "__LD_ENVID__";
     private static UriHashKey: string = "__AF_UriGetHashKey__";
     private static UriUpdateFlagUser: string = "__AF_UriUpdateFlagUser__";
     private static LdProject = "__LD_Project";
-    private static LdEnv = "__LD_Env__";*/
-
-    private envId: string = "590348c958ed570a3af8a496";
-    private static UriHashKey: string = "https://vstsext-ff-dev.azurewebsites.net/api/GetHashKey";
-    private static UriUpdateFlagUser: string = "https://vstsext-ff-dev.azurewebsites.net/api/UpdateUserFeatureFlag";
-    private static LdProject = "default";
-    private static LdEnv = "test";
-
+    private static LdEnv = "__LD_Env__";
     // ----------------------------
+
     public ldClient: any;
     private static instance: LaunchDarklyService;
     public static user: any;
