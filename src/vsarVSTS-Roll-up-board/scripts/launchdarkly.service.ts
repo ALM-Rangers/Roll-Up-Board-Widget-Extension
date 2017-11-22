@@ -17,7 +17,7 @@ export class LaunchDarklyService {
     private envId: string = "__LD_ENVID__";
     private static UriHashKey: string = "__AF_UriGetHashKey__";
     private static UriUpdateFlagUser: string = "__AF_UriUpdateFlagUser__";
-    private static LdProject = "__LD_Project";
+    private static LdProject = "__LD_Project__";
     private static LdEnv = "__LD_Env__";
     // ----------------------------
 
