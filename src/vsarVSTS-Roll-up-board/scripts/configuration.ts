@@ -57,7 +57,7 @@ export class Configuration {
     EnableAppInsightTelemetry(): boolean {
         let isEnabled = this.enableTelemetry;
         if (!isEnabled) {
-            console.log("App Insight Telemetry is disabled");
+            console.log("Application Insights Telemetry is disabled");
         }
         return isEnabled;
     }
@@ -133,14 +133,9 @@ export class Configuration {
                     let displaylogs = _that.$displaylogs.is(":checked");
                     this.DisplayLogsStatus();
 
-                    VSS.getAppToken().then((Apptoken) => {
-                        this.SetEnableFF(Apptoken.token, displaylogs, "display-logs").then((e) => {
-                            if (e === "The flag is updated") {
-                                ldservice.LaunchDarklyService.updateFlag("display-logs", displaylogs);
-                                ldservice.LaunchDarklyService.trackEvent("display-logs");
-                            }
-                        });
-                    });
+                    let eventName = _that.WidgetHelpers.WidgetEvent.ConfigurationChange;
+                    let eventArgs = _that.WidgetHelpers.WidgetEvent.Args(_that.getCustomSettings());
+                    _that.widgetConfigurationContext.notify(eventName, eventArgs);
                 });
             } else {
                 $("#switch-displaylog").hide();
@@ -204,11 +199,24 @@ export class Configuration {
 
     public getCustomSettings() {
         let name = $("#board-dropdown").val();
-        let result = { data: JSON.stringify(<ISettings>{ board: name }) };
+        let displaylogs = $("#display-logs").is(":checked");
+        let result = { data: JSON.stringify(<ISettings>{ board: name, displaylog: displaylogs }) };
         return result;
     }
 
     public onSave() {
+
+        let displaylogchecked = this.$displaylogs.is(":checked");
+        if (displaylogchecked !== this.displayLogs) {
+            VSS.getAppToken().then((Apptoken) => {
+                this.SetEnableFF(Apptoken.token, displaylogchecked, "display-logs").then((e) => {
+                    if (e === "The flag is updated") {
+                        ldservice.LaunchDarklyService.updateFlag("display-logs", displaylogchecked);
+                        ldservice.LaunchDarklyService.trackEvent("display-logs");
+                    }
+                });
+            });
+        }
         return this.WidgetHelpers.WidgetConfigurationSave.Valid(this.getCustomSettings());
     }
 }
