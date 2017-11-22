@@ -13,6 +13,7 @@
 -->
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <link href="css/app.css" rel="stylesheet" />
 </head>
@@ -25,6 +26,18 @@
                 <div class="wrapper">
                     <select id="board-dropdown"></select>
                 </div>
+            </div>
+            <div id="switch-displaylog" style="margin-top:15px;display:line">
+                <div>
+                    <div style="font-size:14px;float:left;color:#767676">Display logs*</div>
+                    <div style="float:right;margin-left:10px" id="displaylogs-status"></div>
+                    <label class="switch" style="float:right">
+                        <input type="checkbox" id="display-logs">
+                        <div class="slider round"></div>
+                    </label>
+                     
+                </div>
+                <div style="clear:left;font-size:13px;padding-top:5px">Activate logs display in browser console developer tools</div>
             </div>
         </div>
     </div>
@@ -44,4 +57,5 @@
         });
     </script>
 </body>
+
 </html>
