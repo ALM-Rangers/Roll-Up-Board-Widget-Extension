@@ -57,7 +57,7 @@ export class Configuration {
     EnableAppInsightTelemetry(): boolean {
         let isEnabled = this.enableTelemetry;
         if (!isEnabled) {
-            console.log("App Insight Telemetry is disabled");
+            console.log("Application Insights Telemetry is disabled");
         }
         return isEnabled;
     }
@@ -133,14 +133,8 @@ export class Configuration {
                     let displaylogs = _that.$displaylogs.is(":checked");
                     this.DisplayLogsStatus();
 
-                    VSS.getAppToken().then((Apptoken) => {
-                        this.SetEnableFF(Apptoken.token, displaylogs, "display-logs").then((e) => {
-                            if (e === "The flag is updated") {
-                                ldservice.LaunchDarklyService.updateFlag("display-logs", displaylogs);
-                                ldservice.LaunchDarklyService.trackEvent("display-logs");
-                            }
-                        });
-                    });
+                    _that.widgetConfigurationContext.notify(_that.WidgetHelpers.WidgetEvent.ConfigurationChange,
+                        _that.WidgetHelpers.WidgetEvent.Args(_that.getCustomSettings()));
                 });
             } else {
                 $("#switch-displaylog").hide();
@@ -209,6 +203,18 @@ export class Configuration {
     }
 
     public onSave() {
+
+        let displaylogchecked = this.$displaylogs.is(":checked");
+        if (displaylogchecked !== this.displayLogs) {
+            VSS.getAppToken().then((Apptoken) => {
+                this.SetEnableFF(Apptoken.token, displaylogchecked, "display-logs").then((e) => {
+                    if (e === "The flag is updated") {
+                        ldservice.LaunchDarklyService.updateFlag("display-logs", displaylogchecked);
+                        ldservice.LaunchDarklyService.trackEvent("display-logs");
+                    }
+                });
+            });
+        }
         return this.WidgetHelpers.WidgetConfigurationSave.Valid(this.getCustomSettings());
     }
 }
