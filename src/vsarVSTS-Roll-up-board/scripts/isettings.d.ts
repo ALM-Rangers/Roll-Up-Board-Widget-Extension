@@ -12,5 +12,5 @@
 
 interface ISettings {
     board: string;
-    boardconfig: any;
+    displaylog: boolean;
 }

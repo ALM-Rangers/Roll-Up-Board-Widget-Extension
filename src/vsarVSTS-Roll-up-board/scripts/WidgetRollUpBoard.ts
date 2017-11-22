@@ -60,7 +60,7 @@ export class WidgetRollUpBoard {
         let isEnabled = this.enableTelemetry;
         this.logs.appInsights.isEnabled = isEnabled;
         if (!isEnabled) {
-            console.log("App Insight Telemetry is disabled");
+            console.log("Application Insights Telemetry is disabled");
         }
         return isEnabled;
     }
