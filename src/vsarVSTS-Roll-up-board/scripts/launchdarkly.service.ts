@@ -17,7 +17,10 @@ export class LaunchDarklyService {
     private envId: string = "__LD_ENVID__";
     private static UriHashKey: string = "__AF_UriGetHashKey__";
     private static UriUpdateFlagUser: string = "__AF_UriUpdateFlagUser__";
+    private static LdProject = "__LD_Project";
+    private static LdEnv = "__LD_Env__";
     // ----------------------------
+
     public ldClient: any;
     private static instance: LaunchDarklyService;
     public static user: any;
@@ -81,7 +84,10 @@ export class LaunchDarklyService {
         return deferred.promise();
     }
 
-    public static updateUserFeature(appToken: string, user, enable, feature, ldproject, ldenv): IPromise<string> {
+    public static updateUserFeature(appToken: string, user, enable, feature): IPromise<string> {
+        let ldproject = this.LdProject;
+        let ldenv = this.LdEnv;
+
         let deferred = $.Deferred<string>();
         if (user) {
             $.ajax({
@@ -93,6 +99,9 @@ export class LaunchDarklyService {
                 data: { token: "" + appToken + "", active: "" + enable + "", feature: "" + feature + "", ldproject: "" + ldproject + "", ldenv: "" + ldenv + "", account: "" + user.custom.account + "" },
                 success: c => {
                     deferred.resolve(c);
+                },
+                error: err => {
+                    deferred.reject(err);
                 }
             });
         } else {

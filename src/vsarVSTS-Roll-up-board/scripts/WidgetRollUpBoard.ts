@@ -39,13 +39,16 @@ export class WidgetRollUpBoard {
     public logs: any = {};
     public enableTelemetry: boolean = true;
     public displayLogs: boolean = false;
+    public activateFF: boolean = true;
 
     constructor(public WidgetHelpers, public ldclientServices) {
         if (ldclientServices) {
             this.enableTelemetry = ldclientServices.flags["enable-telemetry"];
             this.displayLogs = ldclientServices.flags["display-logs"];
+            this.activateFF = true;
         } else {
-            this.displayLogs = true;
+            this.displayLogs = false;
+            this.activateFF = false;
         }
     }
 
@@ -700,6 +703,7 @@ VSS.ready(function () {
                         VSS.notifyLoadSucceeded();
                     });
                 }, function (reject) {
+                    console.log(reject);
                     console.warn("feature flags are not used");
                     RegisterWidgetWithoutFF(WidgetHelpers);
                 }
