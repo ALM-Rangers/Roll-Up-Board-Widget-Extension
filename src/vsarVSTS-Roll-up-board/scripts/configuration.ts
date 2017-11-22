@@ -133,8 +133,9 @@ export class Configuration {
                     let displaylogs = _that.$displaylogs.is(":checked");
                     this.DisplayLogsStatus();
 
-                    _that.widgetConfigurationContext.notify(_that.WidgetHelpers.WidgetEvent.ConfigurationChange,
-                        _that.WidgetHelpers.WidgetEvent.Args(_that.getCustomSettings()));
+                    let eventName = _that.WidgetHelpers.WidgetEvent.ConfigurationChange;
+                    let eventArgs = _that.WidgetHelpers.WidgetEvent.Args(_that.getCustomSettings());
+                    _that.widgetConfigurationContext.notify(eventName, eventArgs);
                 });
             } else {
                 $("#switch-displaylog").hide();
@@ -198,7 +199,8 @@ export class Configuration {
 
     public getCustomSettings() {
         let name = $("#board-dropdown").val();
-        let result = { data: JSON.stringify(<ISettings>{ board: name }) };
+        let displaylogs = $("#display-logs").is(":checked");
+        let result = { data: JSON.stringify(<ISettings>{ board: name, displaylog: displaylogs }) };
         return result;
     }
 
