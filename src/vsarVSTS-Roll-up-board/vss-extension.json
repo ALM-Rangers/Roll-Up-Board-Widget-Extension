@@ -138,7 +138,51 @@
           },
           {
             "rowSpan": 4,
-            "columnSpan": 3
+            "columnSpan": 5
+          },
+          {
+            "rowSpan": 4,
+            "columnSpan": 6
+          },
+          {
+            "rowSpan": 4,
+            "columnSpan": 7
+          },
+          {
+            "rowSpan": 4,
+            "columnSpan": 8
+          },
+          {
+            "rowSpan": 4,
+            "columnSpan": 9
+          },
+          {
+            "rowSpan": 4,
+            "columnSpan": 10
+          },
+          {
+            "rowSpan": 5,
+            "columnSpan": 5
+          },
+          {
+            "rowSpan": 5,
+            "columnSpan": 6
+          },
+          {
+            "rowSpan": 5,
+            "columnSpan": 7
+          },
+          {
+            "rowSpan": 5,
+            "columnSpan": 8
+          },
+          {
+            "rowSpan": 5,
+            "columnSpan": 9
+          },
+          {
+            "rowSpan": 5,
+            "columnSpan": 10
           }
         ],
         "supportedScopes": [
