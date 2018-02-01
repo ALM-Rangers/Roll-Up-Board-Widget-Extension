@@ -684,12 +684,10 @@ VSS.ready(function () {
         WidgetHelpers.IncludeWidgetStyles();
         VSS.getAppToken().then((Apptoken) => {
             let webContext = VSS.getWebContext();
+            console.log("RollUp board Widget: your VSTS User ID : " + webContext.user.id);
+            console.log("RollUp board Widget: your VSTS Account ID : " + webContext.account.id);
             let user = {
-                "key": webContext.user.id + ":" + webContext.account.name,
-                "name": webContext.user.name,
-                "custom": {
-                    "account": webContext.account.name
-                }
+                "key": webContext.user.id + ":" + webContext.account.id
             };
             if (Context.getPageContext().webAccessConfiguration.isHosted) { // FF Only for VSTS
                 ldservice.LaunchDarklyService.init(user, Apptoken.token, webContext.user.id).then((p) => {

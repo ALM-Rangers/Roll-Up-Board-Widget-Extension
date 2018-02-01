@@ -66,11 +66,12 @@ export class LaunchDarklyService {
     private static hashUserKey(user, hash: boolean, appToken: string, userid: string): IPromise<string> {
         let deferred = $.Deferred<string>();
         if (hash) {
+            let keys = user.key.split(":");
             $.ajax({
                 url: this.UriHashKey,
                 type: "POST",
-                headers: { "Access-Control-Allow-Origin": "*" },
-                data: { account: "" + user.custom.account + "", token: "" + appToken + "" },
+                headers: { "Access-Control-Allow-Origin": "*", "api-version": "2", "Authorization": "Bearer " + appToken },
+                data: { account: "" + keys[1] + "" },
                 success: c => {
                     deferred.resolve(c);
                 },
@@ -87,7 +88,7 @@ export class LaunchDarklyService {
     public static updateUserFeature(appToken: string, user, enable, feature): IPromise<string> {
         let ldproject = this.LdProject;
         let ldenv = this.LdEnv;
-
+        let keys = user.key.split(":");
         let deferred = $.Deferred<string>();
         if (user) {
             $.ajax({
@@ -95,8 +96,8 @@ export class LaunchDarklyService {
                 contentType: "application/json; charset=UTF-8",
                 type: "POST",
                 dataType: "json",
-                headers: { "Access-Control-Allow-Origin": "*" },
-                data: { token: "" + appToken + "", active: "" + enable + "", feature: "" + feature + "", ldproject: "" + ldproject + "", ldenv: "" + ldenv + "", account: "" + user.custom.account + "" },
+                headers: { "Access-Control-Allow-Origin": "*", "api-version": "2", "Authorization": "Bearer " + appToken },
+                data: { active: "" + enable + "", feature: "" + feature + "", ldproject: "" + ldproject + "", ldenv: "" + ldenv + "", account: "" + keys[1] + "" },
                 success: c => {
                     deferred.resolve(c);
                 },
