@@ -10,15 +10,24 @@
 // </summary>
 // ---------------------------------------------------------------------
 
-import * as LDClient from "ldclient-js";
 export class LaunchDarklyService {
 
     // Private Settings to Tokenize
-    private envId: string = "__LD_ENVID__";
+    /*private envId: string = "__LD_ENVID__";
     private static UriHashKey: string = "__AF_UriGetHashKey__";
     private static UriUpdateFlagUser: string = "__AF_UriUpdateFlagUser__";
     private static LdProject = "__LD_Project__";
     private static LdEnv = "__LD_Env__";
+    private static UriGetUserFeatureFlags: string = "__AF_UriGetUserFlags__";
+*/
+    private envId: string = "590348c958ed570a3af8a496";
+    private static UriHashKey: string = "https://vstsext-ff-dev.azurewebsites.net/api/GetHashKey";
+    private static UriUpdateFlagUser: string = "https://vstsext-ff-dev.azurewebsites.net/api/UpdateUserFeatureFlag";
+    private static LdProject = "default";
+    private static LdEnv = "test";
+    private static UriGetUserFeatureFlags = "https://vstsext-ff-dev.azurewebsites.net/api/GetUserFeatureFlag";
+    private static sdkKey = "sdk-59baef5c-3851-4fef-a6a6-05a6e9c38ea9";
+    private static AppSettingExtCert = "RollUpBoard_ExtensionCertificate";
     // ----------------------------
 
     public ldClient: any;
@@ -28,32 +37,23 @@ export class LaunchDarklyService {
 
     constructor() { }
 
-    public static init(user: any, appToken: string, userid: string): IPromise<LaunchDarklyService> {
+    public static InitUserFlags(user: any, appToken: string): IPromise<LaunchDarklyService> {
         let deferred = $.Deferred<LaunchDarklyService>();
         if (!this.instance) {
             this.instance = new LaunchDarklyService();
-            this.hashUserKey(user, true, appToken, userid).then((h) => {
-                this.instance.ldClient = LDClient.initialize(this.instance.envId, user, {
-                    hash: h
-                });
-
-                this.instance.ldClient.on("change", (flags) => {
-                    this.setFlags();
-                });
+            this.GetUserFeatureFlags(user, appToken).then((f) => {
+                console.log(f);
+                this.flags = f;
                 this.user = user;
                 // console.log(this.user);
                 deferred.resolve(this.instance);
             }, function (reject) { // e.g Error 500 for ""
                 // console.log(reject);
-                console.warn("RollUpBoard.LaunchDarlyServices.Init.AzureFunction.GethashKey: " + reject.status + " - " + reject.responseJSON);
+                console.warn("RollUpBoard.LaunchDarlyServices.Init.AzureFunction.InitUserFlags: " + reject.status + " - " + reject.responseJSON);
                 deferred.reject();
             });
         }
         return deferred.promise();
-    }
-
-    public static setFlags() {
-        this.flags = this.instance.ldClient.allFlags();
     }
 
     public static updateFlag(feature, value) {
@@ -63,25 +63,22 @@ export class LaunchDarklyService {
     public static trackEvent(event: string) {
         this.instance.ldClient.track(event);
     }
-    private static hashUserKey(user, hash: boolean, appToken: string, userid: string): IPromise<string> {
+
+    private static GetUserFeatureFlags(user, appToken: string): IPromise<string> {
         let deferred = $.Deferred<string>();
-        if (hash) {
-            let keys = user.key.split(":");
-            $.ajax({
-                url: this.UriHashKey,
-                type: "POST",
-                headers: { "Access-Control-Allow-Origin": "*", "api-version": "2", "Authorization": "Bearer " + appToken },
-                data: { account: "" + keys[1] + "" },
-                success: c => {
-                    deferred.resolve(c);
-                },
-                error: err => {
-                    deferred.reject(err);
-                }
-            });
-        } else {
-            deferred.resolve(user.key);
-        }
+        let keys = user.key.split(":");
+        $.ajax({
+            url: this.UriGetUserFeatureFlags,
+            type: "POST",
+            headers: { "Access-Control-Allow-Origin": "*", "api-version": "2", "Authorization": "Bearer " + appToken },
+            data: { account: "" + keys[1] + "", appsettingextcert: "" + this.AppSettingExtCert + "", ldkey: "" + this.sdkKey + "" },
+            success: c => {
+                deferred.resolve(c);
+            },
+            error: err => {
+                deferred.reject(err);
+            }
+        });
         return deferred.promise();
     }
 
@@ -97,7 +94,7 @@ export class LaunchDarklyService {
                 type: "POST",
                 dataType: "json",
                 headers: { "Access-Control-Allow-Origin": "*", "api-version": "2", "Authorization": "Bearer " + appToken },
-                data: { active: "" + enable + "", feature: "" + feature + "", ldproject: "" + ldproject + "", ldenv: "" + ldenv + "", account: "" + keys[1] + "" },
+                data: { active: "" + enable + "", feature: "" + feature + "", ldproject: "" + ldproject + "", ldenv: "" + ldenv + "", account: "" + keys[1] + "", appsettingextcert: "" + this.AppSettingExtCert + "" },
                 success: c => {
                     deferred.resolve(c);
                 },

@@ -4,7 +4,7 @@
     "build": "npm run copy && npm run lint && npm run clean && npm run webpack",
     "postbuild": "rimraf ./scripts/telemetryclient.js && rimraf ./scripts/telemetryclient.d.ts",
     "package": "tfx extension create  --rev-version",
-    "gallery-publish": "tfx extension publish --rev-version",
+    "gallery-publish": "tfx extension publish --rev-version --token pnz2t7657he7at4bx34x7pzlonsrsu2odb5tsaaczqqbtyvqwytq",
     "clean": "rimraf ./dist && rimraf ./*.vsix",
     "lint": "tslint -c tslint.json \"scripts/*.ts",
     "webpack": "webpack --progress --colors --config webpack.config.js --output-path ./dist -p"
