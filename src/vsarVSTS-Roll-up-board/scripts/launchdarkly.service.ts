@@ -70,7 +70,7 @@ export class LaunchDarklyService {
         $.ajax({
             url: this.UriGetUserFeatureFlags,
             type: "POST",
-            headers: { "Access-Control-Allow-Origin": "*", "api-version": "2", "Authorization": "Bearer " + appToken },
+            headers: { "Access-Control-Allow-Origin": "*", "api-version": "1", "Authorization": "Bearer " + appToken },
             data: { account: "" + keys[1] + "", appsettingextcert: "" + this.AppSettingExtCert + "", ldkey: "" + this.sdkKey + "" },
             success: c => {
                 deferred.resolve(c);
@@ -93,7 +93,7 @@ export class LaunchDarklyService {
                 contentType: "application/json; charset=UTF-8",
                 type: "POST",
                 dataType: "json",
-                headers: { "Access-Control-Allow-Origin": "*", "api-version": "2", "Authorization": "Bearer " + appToken },
+                headers: { "Access-Control-Allow-Origin": "*", "api-version": "3", "Authorization": "Bearer " + appToken },
                 data: { active: "" + enable + "", feature: "" + feature + "", ldproject: "" + ldproject + "", ldenv: "" + ldenv + "", account: "" + keys[1] + "", appsettingextcert: "" + this.AppSettingExtCert + "" },
                 success: c => {
                     deferred.resolve(c);
@@ -114,7 +114,7 @@ export class LaunchDarklyService {
         $.ajax({
             url: this.UriGetUserFeatureFlags,
             type: "POST",
-            headers: { "Access-Control-Allow-Origin": "*", "api-version": "2", "Authorization": "Bearer " + appToken },
+            headers: { "Access-Control-Allow-Origin": "*", "api-version": "1", "Authorization": "Bearer " + appToken },
             data: { account: "" + keys[1] + "", appsettingextcert: "" + this.AppSettingExtCert + "", ldkey: "" + this.sdkKey + "", customEvent: "" + customEvent + "" },
             success: c => {
                 deferred.resolve(c);
