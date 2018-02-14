@@ -107,4 +107,22 @@ export class LaunchDarklyService {
         }
         return deferred.promise();
     }
+
+    public static TrackEventFeatureFlags(user, appToken: string, customEvent: string): IPromise<string> {
+        let deferred = $.Deferred<string>();
+        let keys = user.key.split(":");
+        $.ajax({
+            url: this.UriGetUserFeatureFlags,
+            type: "POST",
+            headers: { "Access-Control-Allow-Origin": "*", "api-version": "2", "Authorization": "Bearer " + appToken },
+            data: { account: "" + keys[1] + "", appsettingextcert: "" + this.AppSettingExtCert + "", ldkey: "" + this.sdkKey + "", customEvent: "" + customEvent + "" },
+            success: c => {
+                deferred.resolve(c);
+            },
+            error: err => {
+                deferred.reject(err);
+            }
+        });
+        return deferred.promise();
+    }
 }

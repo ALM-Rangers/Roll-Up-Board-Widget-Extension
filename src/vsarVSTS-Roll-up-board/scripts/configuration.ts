@@ -197,6 +197,15 @@ export class Configuration {
         return deferred.promise;
     }
 
+    private TrackFF(token: string, customEvent: string): IPromise<string> {
+        let deferred = Q.defer<string>();
+        ldservice.LaunchDarklyService.TrackEventFeatureFlags(this.ldclientServices.user, token, customEvent).then((r) => {
+            console.log(r);
+            deferred.resolve(r);
+        });
+        return deferred.promise;
+    }
+
     public getCustomSettings() {
         let name = $("#board-dropdown").val();
         let displaylogs = $("#display-logs").is(":checked");
@@ -212,7 +221,9 @@ export class Configuration {
                 this.SetEnableFF(Apptoken.token, displaylogchecked, "display-logs").then((e) => {
                     if (e === "The flag is updated") {
                         ldservice.LaunchDarklyService.updateFlag("display-logs", displaylogchecked);
-                        ldservice.LaunchDarklyService.trackEvent("display-logs");
+                        this.TrackFF(Apptoken.token, "display-logs").then((e) => {
+                            this.DisplayLogs(e);
+                        });
                     }
                 });
             });
