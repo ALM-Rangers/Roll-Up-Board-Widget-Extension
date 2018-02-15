@@ -13,21 +13,15 @@
 export class LaunchDarklyService {
 
     // Private Settings to Tokenize
-    /*private envId: string = "__LD_ENVID__";
+    // private envId: string = "__LD_ENVID__";
     private static UriHashKey: string = "__AF_UriGetHashKey__";
     private static UriUpdateFlagUser: string = "__AF_UriUpdateFlagUser__";
     private static LdProject = "__LD_Project__";
     private static LdEnv = "__LD_Env__";
     private static UriGetUserFeatureFlags: string = "__AF_UriGetUserFlags__";
-*/
-    private envId: string = "590348c958ed570a3af8a496";
-    private static UriHashKey: string = "https://vstsext-ff-dev.azurewebsites.net/api/GetHashKey";
-    private static UriUpdateFlagUser: string = "https://vstsext-ff-dev.azurewebsites.net/api/UpdateUserFeatureFlag";
-    private static LdProject = "default";
-    private static LdEnv = "test";
-    private static UriGetUserFeatureFlags = "https://vstsext-ff-dev.azurewebsites.net/api/GetUserFeatureFlag";
-    private static sdkKey = "sdk-59baef5c-3851-4fef-a6a6-05a6e9c38ea9";
-    private static AppSettingExtCert = "RollUpBoard_ExtensionCertificate";
+    private static sdkKey = "__LD_SDK_ENVKEY__";
+    private static AppSettingExtCert = "__AF_AppSettings_ExtCert__";
+
     // ----------------------------
 
     public ldClient: any;
