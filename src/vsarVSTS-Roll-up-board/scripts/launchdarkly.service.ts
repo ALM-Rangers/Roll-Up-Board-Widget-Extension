@@ -21,6 +21,7 @@ export class LaunchDarklyService {
     private static UriGetUserFeatureFlags: string = "__AF_UriGetUserFlags__";
     private static sdkKey = "__LD_SDK_ENVKEY__";
     private static AppSettingExtCert = "__AF_AppSettings_ExtCert__";
+    private static UriTrackEventFeatureFlags: string = "__AF_UriTrackEventFeatureFlags__";
 
     // ----------------------------
 
