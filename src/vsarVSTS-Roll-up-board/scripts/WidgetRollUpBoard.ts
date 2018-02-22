@@ -690,16 +690,15 @@ VSS.ready(function () {
                 "key": webContext.user.id + ":" + webContext.account.id
             };
             if (Context.getPageContext().webAccessConfiguration.isHosted) { // FF Only for VSTS
-                ldservice.LaunchDarklyService.init(user, Apptoken.token, webContext.user.id).then((p) => {
-                    p.ldClient.on("ready", function () {
-                        VSS.register("rollupboardwidget", () => {
-                            ldservice.LaunchDarklyService.setFlags();
-                            console.log("feature flags are enabled");
-                            let rollupboard = new WidgetRollUpBoard(WidgetHelpers, ldservice.LaunchDarklyService);
-                            return rollupboard;
-                        });
-                        VSS.notifyLoadSucceeded();
+                ldservice.LaunchDarklyService.InitUserFlags(user, Apptoken.token).then((p) => {
+
+                    VSS.register("rollupboardwidget", () => {
+                        console.log("feature flags are enabled");
+                        let rollupboard = new WidgetRollUpBoard(WidgetHelpers, ldservice.LaunchDarklyService);
+                        return rollupboard;
                     });
+                    VSS.notifyLoadSucceeded();
+
                 }, function (reject) {
                     console.log(reject);
                     console.warn("feature flags are not used");
