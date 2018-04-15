@@ -69,7 +69,7 @@ export class LaunchDarklyService {
             type: "POST",
             headers: { "Access-Control-Allow-Origin": "*", "api-version": "3", "Authorization": "Bearer " + appToken },
 
-            data: {  ldproject: "" + ldproject + "", ldenv: "" + ldenv + "", account: "" + keys[1] + "", extcertkey: "" + this.ExtCertKey + "" },
+            data: { account: "" + keys[1] + "", extcertkey: "" + this.ExtCertKey + "" },
 
             success: c => {
                 deferred.resolve(c);
@@ -114,7 +114,7 @@ export class LaunchDarklyService {
             url: this.UriGetUserFeatureFlags,
             type: "POST",
             headers: { "Access-Control-Allow-Origin": "*", "api-version": "2", "Authorization": "Bearer " + appToken },
-            data: { account: "" + keys[1] + "", extcertkey: "" + this.ExtCertKey + "", ldkey: "" + this.sdkKey + "", customEvent: "" + customEvent + "" },
+            data: { account: "" + keys[1] + "", extcertkey: "" + this.ExtCertKey + "", customEvent: "" + customEvent + "" },
             success: c => {
                 deferred.resolve(c);
             },
