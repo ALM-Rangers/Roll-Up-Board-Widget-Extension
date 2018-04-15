@@ -111,7 +111,7 @@ export class LaunchDarklyService {
         let deferred = $.Deferred<string>();
         let keys = user.key.split(":");
         $.ajax({
-            url: this.UriGetUserFeatureFlags,
+            url: this.UriTrackEventFeatureFlags,
             type: "POST",
             headers: { "Access-Control-Allow-Origin": "*", "api-version": "2", "Authorization": "Bearer " + appToken },
             data: { account: "" + keys[1] + "", extcertkey: "" + this.ExtCertKey + "", customEvent: "" + customEvent + "" },
