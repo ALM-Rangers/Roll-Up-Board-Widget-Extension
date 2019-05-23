@@ -68,11 +68,8 @@ export class Configuration {
     }
 
     public load(widgetSettings, widgetConfigurationContext) {
-        if (this.EnableAppInsightTelemetry()) {
-            telemclient.TelemetryClient.getClient(telemetryClientSettings.settings).trackPageView("RollUpBoard.Configuration");
-        }
+        let _that = this;
 
-      /*  let _that = this;
         this.widgetConfigurationContext = widgetConfigurationContext;
 
         this.GetProjectTemplate().then(() => { });
@@ -98,7 +95,6 @@ export class Configuration {
                     $queryDropdown.appendChild(opt);
                 }
             });
-
             // Backlog Items
             if (!backlogconf.hiddenBacklogs.includes(backlogconf.requirementBacklog.id)) {
                 let opt = document.createElement("option");
@@ -139,10 +135,8 @@ export class Configuration {
             } else {
                 $("#switch-displaylog").hide();
             }
-
-            return _that.WidgetHelpers.WidgetStatusHelper.Success();
         });
-        */
+        return _that.WidgetHelpers.WidgetStatusHelper.Success();
     }
 
     public PopulateBoardDropdown(): IPromise<WorkContracts.BoardReference[]> {
@@ -239,8 +233,7 @@ VSS.ready(function () {
             let user = {
                 "key": webContext.user.id + ":" + webContext.account.id
             };
-            // Context.getPageContext().webAccessConfiguration.isHosted
-            if (false) { // FF Only for VSTS
+            if (Context.getPageContext().webAccessConfiguration.isHosted) { // FF Only for VSTS
                 ldservice.LaunchDarklyService.InitUserFlags(user, Apptoken.token).then((p) => {
 
                     VSS.register("rollupboardwidget-Configuration", () => {
