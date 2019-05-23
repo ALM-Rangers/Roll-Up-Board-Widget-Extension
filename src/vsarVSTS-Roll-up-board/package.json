@@ -1,7 +1,7 @@
 {
   "scripts": {
     "copy": "cpx node_modules/telemetryclient-team-services-extension/lib/*.* scripts",
-    "build": "npm run copy && npm run lint && npm run clean && npm run webpack && npm run gallery-publish",
+    "build": "npm run copy && npm run lint && npm run clean && npm run webpack",
     "postbuild": "rimraf ./scripts/telemetryclient.js && rimraf ./scripts/telemetryclient.d.ts",
     "package": "tfx extension create  --rev-version",
     "gallery-publish": "tfx extension publish --rev-version",
