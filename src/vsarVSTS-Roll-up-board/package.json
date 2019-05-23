@@ -10,7 +10,7 @@
     "webpack": "webpack --progress --colors --config webpack.config.js --output-path ./dist -p"
   },
   "devDependencies": {
-    "tfx-cli": "^0.4.5",
+    "tfx-cli": "^0.7.5",
     "cpx": "^1.5.0",
     "jasmine": "^2.5.1",
     "rimraf": "^2.5.4",
@@ -24,7 +24,7 @@
     "@types/jquery": "^2.0.34",
     "@types/q": "0.0.32",
     "@microsoft/gulp-core-build-typescript": "^2.4.4",
-    "vss-web-extension-sdk": "^2.115.0",
+    "vss-web-extension-sdk": "^5.141.0",
     "applicationinsights-js": "*",
     "telemetryclient-team-services-extension": "*",
     "ldclient-js": "^1.1.12",
