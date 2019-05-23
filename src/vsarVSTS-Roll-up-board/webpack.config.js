@@ -9,45 +9,35 @@ module.exports = {
         rollupboard : "./scripts/RollUpBoard.ts"
         
     },
+    devtool: "source-map",
     output: {
         filename: "[name].js",
-        libraryTarget: "amd"
+        libraryTarget: "amd",
+        sourceMapFilename: "[file].map"
     },
     externals: [
         /^VSS\/.*/, /^TFS\/.*/, /^q$/
     ],
     resolve: {
-        extensions: [
-            "",
-            ".webpack.js",
-            ".web.js",
-            ".ts",
-            ".tsx",
-            ".js"],
-        root: [
-            path.resolve("./scripts")
-        ]
+        extensions: ["*", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
+        modules: [path.resolve("./scripts"), "node_modules"]
     },
     module: {
-        preLoaders: [
+        rules: [
             {
                 test: /\.tsx?$/,
-                loader: "tslint"
-            }
-        ],
-        loaders: [
+                enforce: "pre",
+                loader: "tslint-loader",
+                options: {
+                    emitErrors: true,
+                    failOnHint: true
+                }
+            },
             {
                 test: /\.tsx?$/,
                 loader: "ts-loader"
-            },
-            {
-                test: /\.s?css$/,
-                loaders: ["style", "css", "sass"]
             }
         ]
-    },
-    tslint: {
-        emitErrors: true,
-        failOnHint: true
     }
 }
+
