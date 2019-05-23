@@ -238,7 +238,8 @@ VSS.ready(function () {
             let user = {
                 "key": webContext.user.id + ":" + webContext.account.id
             };
-            if (Context.getPageContext().webAccessConfiguration.isHosted) { // FF Only for VSTS
+            // Context.getPageContext().webAccessConfiguration.isHosted
+            if (false) { // FF Only for VSTS
                 ldservice.LaunchDarklyService.InitUserFlags(user, Apptoken.token).then((p) => {
 
                     VSS.register("rollupboardwidget-Configuration", () => {
