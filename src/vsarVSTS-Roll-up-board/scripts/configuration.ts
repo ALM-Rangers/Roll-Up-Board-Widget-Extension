@@ -72,7 +72,7 @@ export class Configuration {
             telemclient.TelemetryClient.getClient(telemetryClientSettings.settings).trackPageView("RollUpBoard.Configuration");
         }
 
-        let _that = this;
+      /*  let _that = this;
         this.widgetConfigurationContext = widgetConfigurationContext;
 
         this.GetProjectTemplate().then(() => { });
@@ -142,6 +142,7 @@ export class Configuration {
 
             return _that.WidgetHelpers.WidgetStatusHelper.Success();
         });
+        */
     }
 
     public PopulateBoardDropdown(): IPromise<WorkContracts.BoardReference[]> {
