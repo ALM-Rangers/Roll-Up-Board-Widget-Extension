@@ -10,7 +10,6 @@
 // </summary>
 // ---------------------------------------------------------------------
 
-/// <reference types="vss-web-extension-sdk" />
 /// <reference path="isettings.d.ts" />
 "use strict";
 import RestClient = require("TFS/Work/RestClient");
@@ -146,25 +145,25 @@ export class Configuration {
     }
 
     public PopulateBoardDropdown(): IPromise<WorkContracts.BoardReference[]> {
-        let deferred = Q.defer<WorkContracts.BoardReference[]>();
+        let deferred = $.Deferred<WorkContracts.BoardReference[]>();
         let tc = <CoreContracts.TeamContext>{};
         tc.projectId = VSS.getWebContext().project.id;
         tc.teamId = VSS.getWebContext().team.id;
         this.client.getBoards(tc).then((boards) => {
             deferred.resolve(boards);
         });
-        return deferred.promise;
+        return deferred.promise();
     }
 
     public GetTeamSettings(): IPromise<WorkContracts.TeamSetting> {
-        let deferred = Q.defer<WorkContracts.TeamSetting>();
+        let deferred = $.Deferred<WorkContracts.TeamSetting>();
         let tc = <CoreContracts.TeamContext>{};
         tc.projectId = VSS.getWebContext().project.id;
         tc.teamId = VSS.getWebContext().team.id;
         this.client.getTeamSettings(tc).then((teamsettings) => {
             deferred.resolve(teamsettings);
         });
-        return deferred.promise;
+        return deferred.promise();
     }
 
     public GetProjectTemplate(): IPromise<string> {
@@ -189,21 +188,21 @@ export class Configuration {
     }
 
     private SetEnableFF(token: string, enabled: boolean, feature: string): IPromise<string> {
-        let deferred = Q.defer<string>();
+        let deferred = $.Deferred<string>();
         ldservice.LaunchDarklyService.updateUserFeature(token, this.ldclientServices.user, enabled, feature).then((r) => {
             console.log(r);
             deferred.resolve(r);
         });
-        return deferred.promise;
+        return deferred.promise();
     }
 
     private TrackFF(token: string, customEvent: string): IPromise<string> {
-        let deferred = Q.defer<string>();
+        let deferred = $.Deferred<string>();
         ldservice.LaunchDarklyService.TrackEventFeatureFlags(this.ldclientServices.user, token, customEvent).then((r) => {
             console.log(r);
             deferred.resolve(r);
         });
-        return deferred.promise;
+        return deferred.promise();
     }
 
     public getCustomSettings() {
