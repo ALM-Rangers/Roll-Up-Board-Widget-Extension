@@ -167,14 +167,14 @@ export class Configuration {
     }
 
     public GetProjectTemplate(): IPromise<string> {
-        let deferred = Q.defer<string>();
+        let deferred = $.Deferred<string>();
         let client = CoreClient.getClient();
         client.getProject(VSS.getWebContext().project.id, true).then((q: CoreContracts.TeamProject) => {
             let processT = q.capabilities["processTemplate"];
             deferred.resolve(processT["templateName"]);
         });
 
-        return deferred.promise;
+        return deferred.promise();
     }
 
     public DisplayLogsStatus() {
