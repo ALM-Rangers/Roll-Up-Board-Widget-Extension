@@ -10,3 +10,5 @@ dist/
 **/telemetryclient.d.ts
 *.vsix
 sync.cmd
+package-dev.json
+vss-extension-dev.json

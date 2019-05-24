@@ -23,8 +23,7 @@
   "dependencies": {
     "@types/jquery": "^2.0.34",
     "@types/q": "0.0.32",
-    "@microsoft/gulp-core-build-typescript": "^2.4.4",
-    "vss-web-extension-sdk": "^2.115.0",
+    "vss-web-extension-sdk": "^2.117.0",
     "applicationinsights-js": "*",
     "telemetryclient-team-services-extension": "*",
     "ldclient-js": "^1.1.12",
