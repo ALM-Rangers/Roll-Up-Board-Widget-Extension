@@ -25,8 +25,6 @@ import * as tc from "telemetryclient-team-services-extension";
 import telemetryClientSettings = require("./telemetryClientSettings");
 
 import rollupboardServices = require("./RollUpBoardServices");
-import * as ldservice from "./launchdarkly.service";
-
 export class WidgetRollUpBoard {
 
     public client = RestClient.getClient();
@@ -39,17 +37,9 @@ export class WidgetRollUpBoard {
     public logs: any = {};
     public enableTelemetry: boolean = true;
     public displayLogs: boolean = false;
-    public activateFF: boolean = true;
 
-    constructor(public WidgetHelpers, public ldclientServices) {
-        if (ldclientServices) {
-            this.enableTelemetry = ldclientServices.flags["enable-telemetry"];
-            this.displayLogs = ldclientServices.flags["display-logs"];
-            this.activateFF = true;
-        } else {
-            this.displayLogs = false;
-            this.activateFF = false;
-        }
+    constructor(public WidgetHelpers) {
+        this.displayLogs = true;
     }
 
     IsVSTS(): boolean {
@@ -684,38 +674,13 @@ VSS.ready(function () {
         WidgetHelpers.IncludeWidgetStyles();
         VSS.getAppToken().then((Apptoken) => {
             let webContext = VSS.getWebContext();
-            console.log("RollUp board Widget: your VSTS User ID : " + webContext.user.id);
-            console.log("RollUp board Widget: your VSTS Account ID : " + webContext.account.id);
-            let user = {
-                "key": webContext.user.id + ":" + webContext.account.id
-            };
-            if (Context.getPageContext().webAccessConfiguration.isHosted) { // FF Only for VSTS
-                ldservice.LaunchDarklyService.InitUserFlags(user, Apptoken.token).then((p) => {
-
-                    VSS.register("rollupboardwidget", () => {
-                        console.log("feature flags are enabled");
-                        let rollupboard = new WidgetRollUpBoard(WidgetHelpers, ldservice.LaunchDarklyService);
-                        return rollupboard;
-                    });
-                    VSS.notifyLoadSucceeded();
-
-                }, function (reject) {
-                    console.log(reject);
-                    console.warn("feature flags are not used");
-                    RegisterWidgetWithoutFF(WidgetHelpers);
-                }
-                );
-            } else { // For TFS OnPremise
-                console.info("Context : TFS On-Premise");
-                // console.log(webContext); for v2
-                RegisterWidgetWithoutFF(WidgetHelpers);
-            }
+            RegisterWidget(WidgetHelpers);
         });
     });
 });
-function RegisterWidgetWithoutFF(WidgetHelpers: any) {
+function RegisterWidget(WidgetHelpers: any) {
     VSS.register("rollupboardwidget", () => {
-        let rollupboard = new WidgetRollUpBoard(WidgetHelpers, null);
+        let rollupboard = new WidgetRollUpBoard(WidgetHelpers);
         return rollupboard;
     });
     VSS.notifyLoadSucceeded();

@@ -18,12 +18,9 @@ import CoreContracts = require("TFS/Core/Contracts");
 import WorkContracts = require("TFS/Work/Contracts");
 import Q = require("q");
 import Context = require("VSS/Context");
-import * as telemclient from "telemetryclient-team-services-extension";
 import telemetryClientSettings = require("./telemetryClientSettings");
 
 import rollupboardServices = require("./RollUpBoardServices");
-import * as ldservice from "./launchdarkly.service";
-
 export class Configuration {
     widgetConfigurationContext = null;
 
@@ -34,19 +31,10 @@ export class Configuration {
     public teamSettingsVisibility: any = {};
     public BacklogConfiguration: { id: string, name: string, color: string, visible: boolean }[] = [];
     public enableTelemetry: boolean = true;
-    public displayLogs: boolean = false;
-    public activateFF: boolean = true;
+    public displayLogs: boolean = true;
 
-    constructor(public WidgetHelpers, public ldclientServices) {
-        if (ldclientServices) {
-            this.enableTelemetry = ldclientServices.flags["enable-telemetry"];
-            this.displayLogs = ldclientServices.flags["display-logs"];
-            // console.log(this.displayLogs);
-            this.activateFF = true;
-        } else {
-            this.displayLogs = false;
-            this.activateFF = false;
-        }
+    constructor(public WidgetHelpers) {
+        this.displayLogs = true;
     }
 
     IsVSTS(): boolean {
@@ -119,22 +107,8 @@ export class Configuration {
                 $boardDropdown.val("");
             }
 
-            if (this.activateFF) {
-                $("#switch-displaylog").show();
-                _that.$displaylogs.prop("checked", _that.displayLogs);
-                // console.log(_that.displayLogs);
-                this.DisplayLogsStatus();
-                _that.$displaylogs.change(() => {
-                    let displaylogs = _that.$displaylogs.is(":checked");
-                    this.DisplayLogsStatus();
+            $("#switch-displaylog").hide();
 
-                    let eventName = _that.WidgetHelpers.WidgetEvent.ConfigurationChange;
-                    let eventArgs = _that.WidgetHelpers.WidgetEvent.Args(_that.getCustomSettings());
-                    _that.widgetConfigurationContext.notify(eventName, eventArgs);
-                });
-            } else {
-                $("#switch-displaylog").hide();
-            }
         });
         return _that.WidgetHelpers.WidgetStatusHelper.Success();
     }
@@ -182,81 +156,26 @@ export class Configuration {
         }
     }
 
-    private SetEnableFF(token: string, enabled: boolean, feature: string): IPromise<string> {
-        let deferred = $.Deferred<string>();
-        ldservice.LaunchDarklyService.updateUserFeature(token, this.ldclientServices.user, enabled, feature).then((r) => {
-            console.log(r);
-            deferred.resolve(r);
-        });
-        return deferred.promise();
-    }
-
-    private TrackFF(token: string, customEvent: string): IPromise<string> {
-        let deferred = $.Deferred<string>();
-        ldservice.LaunchDarklyService.TrackEventFeatureFlags(this.ldclientServices.user, token, customEvent).then((r) => {
-            console.log(r);
-            deferred.resolve(r);
-        });
-        return deferred.promise();
-    }
-
     public getCustomSettings() {
         let name = $("#board-dropdown").val();
-        let displaylogs = $("#display-logs").is(":checked");
-        let result = { data: JSON.stringify(<ISettings>{ board: name, displaylog: displaylogs }) };
+        let result = { data: JSON.stringify(<ISettings>{ board: name, displaylog: true }) };
         return result;
     }
 
     public onSave() {
-
-        let displaylogchecked = this.$displaylogs.is(":checked");
-        if (displaylogchecked !== this.displayLogs) {
-            VSS.getAppToken().then((Apptoken) => {
-                this.SetEnableFF(Apptoken.token, displaylogchecked, "display-logs").then((e) => {
-                    if (e === "The flag is updated") {
-                        ldservice.LaunchDarklyService.updateFlag("display-logs", displaylogchecked);
-                        this.TrackFF(Apptoken.token, "display-logs").then((e) => {
-                            this.DisplayLogs(e);
-                        });
-                    }
-                });
-            });
-        }
         return this.WidgetHelpers.WidgetConfigurationSave.Valid(this.getCustomSettings());
     }
 }
 VSS.ready(function () {
     VSS.require(["TFS/Dashboards/WidgetHelpers"], (WidgetHelpers) => {
         WidgetHelpers.IncludeWidgetConfigurationStyles();
-        VSS.getAppToken().then((Apptoken) => {
-            let webContext = VSS.getWebContext();
-            let user = {
-                "key": webContext.user.id + ":" + webContext.account.id
-            };
-            if (Context.getPageContext().webAccessConfiguration.isHosted) { // FF Only for VSTS
-                ldservice.LaunchDarklyService.InitUserFlags(user, Apptoken.token).then((p) => {
-
-                    VSS.register("rollupboardwidget-Configuration", () => {
-                        console.log("feature flags are enabled");
-                        let configuration = new Configuration(WidgetHelpers, ldservice.LaunchDarklyService);
-                        return configuration;
-                    });
-                    VSS.notifyLoadSucceeded();
-                }, function (reject) {
-                    console.warn("feature flags are not used");
-                    RegisterWidgetConfigurationWithoutFF(WidgetHelpers);
-                });
-            } else {
-                console.log("Context : TFS On-Premise");
-                RegisterWidgetConfigurationWithoutFF(WidgetHelpers);
-            }
-        });
+        RegisterWidgetConfiguration(WidgetHelpers);
     });
 });
 
-function RegisterWidgetConfigurationWithoutFF(WidgetHelpers: any) {
+function RegisterWidgetConfiguration(WidgetHelpers: any) {
     VSS.register("rollupboardwidget-Configuration", () => {
-        let configuration = new Configuration(WidgetHelpers, null);
+        let configuration = new Configuration(WidgetHelpers);
         return configuration;
     });
     VSS.notifyLoadSucceeded();
