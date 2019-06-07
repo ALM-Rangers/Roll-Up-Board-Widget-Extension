@@ -25,9 +25,7 @@
     "@types/q": "0.0.32",
     "vss-web-extension-sdk": "^2.117.0",
     "applicationinsights-js": "*",
-    "telemetryclient-team-services-extension": "*",
-    "ldclient-js": "^1.1.12",
-    "event-source-polyfill": "^0.0.11"
+    "telemetryclient-team-services-extension": "*"
   },
   "name": "rollup",
   "private": true,
