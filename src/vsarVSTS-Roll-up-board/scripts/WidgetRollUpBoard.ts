@@ -108,7 +108,7 @@ export class WidgetRollUpBoard {
                             let b: Board.RollUpBoard = values[0];
 
                             this.DisplayHtmlRollUpBoard(b);
-                            let wilink = VSS.getWebContext().host.uri + VSS.getWebContext().project.name + "/" + VSS.getWebContext().team.name + "/_boards/board/t/" + VSS.getWebContext().team.name + "/" + customSettings.board;
+                            let wilink = VSS.getWebContext().host.uri + VSS.getWebContext().project.name + "/_boards/board/t/" + VSS.getWebContext().team.name + "/" + customSettings.board;
                             $(".widget").off();
                             $(".widget").on("click", function () {
                                 VSS.getService(VSS.ServiceIds.Navigation).then((navigationService: any) => {

@@ -14,7 +14,7 @@ The **Roll-up Board Widget** displays an aggregated view of your backlog boards 
 
 3. Enter a Title (1), select a suitable Size (2), and select a Backlog (3). Click Save (4).
 
-    ![configure](img/overview_configure.png)
+    ![configure](static/images/overview_configure.png)
 
 4. Add and arrange one or more of the widgets on your dashboard.
 
@@ -40,5 +40,3 @@ We need your feedback! Here are some ways to connect with us:
 
 - Add a comment in the Q&A section below and please add an actionable review.
 - Send us an [email](mailto://mktdevlabs@microsoft.com).
-
-Review the [list of features and resolved issues of latest tools and extensions](https://aka.ms/vsarreleases) for information on the latest releases.
