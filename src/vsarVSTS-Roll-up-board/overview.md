@@ -40,5 +40,3 @@ We need your feedback! Here are some ways to connect with us:
 
 - Add a comment in the Q&A section below and please add an actionable review.
 - Send us an [email](mailto://mktdevlabs@microsoft.com).
-
-Review the [list of features and resolved issues of latest tools and extensions](https://aka.ms/vsarreleases) for information on the latest releases.
