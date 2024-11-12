@@ -1,3 +1,4 @@
+> **NOTICE** - We have deprecated this extension. The extension will continue to serve as an open source solution and sample extension on GitHub.
 
 ## Data/Telemetry
 This project collects usage data and sends it to Microsoft to help Microsoft improve its products and services. For more information about how Microsoft uses telemetry data, read the Microsoft [privacy statement](http://go.microsoft.com/fwlink/?LinkId=521839). 
